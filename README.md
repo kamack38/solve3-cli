@@ -30,4 +30,5 @@ Commands:
 ### Reference
 
 `[]` - optional argument
+
 `<>` - required argument
