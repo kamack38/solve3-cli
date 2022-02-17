@@ -11,7 +11,6 @@
     "scripts": {
         "dev": "npm run build && node ./dist/index.js",
         "build": "tsc",
-        "publish": "npm run build && npm publish",
         "postinstall": "node ./dist/scripts/postInstall.js",
         "preuninstall": "node ./dist/scripts/preUninstall.js"
     },
