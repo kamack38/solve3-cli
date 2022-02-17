@@ -1,6 +1,6 @@
 {
     "name": "solve3-cli",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "A simple cli to use Solve3 from your terminal",
     "main": "./bin/index.js",
     "bin": "bin/index.js",
@@ -11,10 +11,20 @@
         "build": "tsc",
         "postinstall": "node ./bin/utils/postInstall.js"
     },
-    "keywords": [],
+    "keywords": [
+        "solve3",
+        "pokorski",
+        "C++"
+    ],
     "author": "Kamack38 <kamack38.biznes@gmail.com> (https://kamack38.github.io/)",
     "license": "MIT",
-    "repository": "kamack38/solve3-cli",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kamack38/Solve3-Cli.git"
+    },
+    "bugs": {
+        "url": "https://github.com/kamack38/Solve3-Cli/issues"
+    },
     "devDependencies": {
         "@types/configstore": "^5.0.1",
         "@types/inquirer": "^8.2.0",
