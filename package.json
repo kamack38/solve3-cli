@@ -1,21 +1,26 @@
 {
     "name": "solve3-cli",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "A simple cli to use Solve3 from your terminal",
-    "main": "./bin/index.js",
-    "bin": "bin/index.js",
+    "main": "./dist/index.js",
+    "bin": "./dist/index.js",
     "type": "module",
     "preferGlobal": true,
     "scripts": {
-        "start": "npm run build && node ./bin/index.js",
+        "dev": "npm run build && node ./dist/index.js",
         "build": "tsc",
-        "postinstall": "node ./bin/scripts/postInstall.js",
-        "preuninstall": "node ./bin/scripts/preUninstall.js"
+        "postinstall": "node ./dist/scripts/postInstall.js",
+        "preuninstall": "node ./dist/scripts/preUninstall.js"
     },
     "keywords": [
+        "cli",
+        "typescript",
         "solve3",
         "pokorski",
         "C++"
+    ],
+    "files": [
+        "dist/**/*"
     ],
     "author": "Kamack38 <kamack38.biznes@gmail.com> (https://kamack38.github.io/)",
     "license": "MIT",

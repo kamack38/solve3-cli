@@ -7,19 +7,10 @@
     ],
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "bin",
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "node_modules/*",
-        "src/types/*"
-      ]
-    },
+    "rootDir": "src",
+    "outDir": "dist",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true
-  },
-  "include": [
-    "src/**/*"
-  ]
+  }
 }
