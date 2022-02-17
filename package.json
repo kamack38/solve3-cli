@@ -9,7 +9,8 @@
     "scripts": {
         "start": "npm run build && node ./bin/index.js",
         "build": "tsc",
-        "postinstall": "node ./bin/utils/postInstall.js"
+        "postinstall": "node ./bin/scripts/postInstall.js",
+        "preuninstall": "node ./bin/scripts/preUninstall.js"
     },
     "keywords": [
         "solve3",
