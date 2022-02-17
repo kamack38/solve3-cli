@@ -1,6 +1,6 @@
 {
     "name": "solve3-cli",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "A simple cli to use Solve3 from your terminal",
     "main": "./bin/index.js",
     "bin": "bin/index.js",
@@ -25,6 +25,7 @@
     "bugs": {
         "url": "https://github.com/kamack38/Solve3-Cli/issues"
     },
+    "funding": "https://ko-fi.com/kamack38",
     "devDependencies": {
         "@types/configstore": "^5.0.1",
         "@types/inquirer": "^8.2.0",

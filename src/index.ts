@@ -14,7 +14,7 @@ const config = new Configstore(packageJson.name)
 
 const program = new Command()
 
-program.name('solve3-cli').description('Awesome Solve3 Cli built using custom API').version('0.1.1')
+program.name('solve3-cli').description('Awesome Solve3 Cli built using custom API').version('0.1.2')
 
 program
     .command('login')
