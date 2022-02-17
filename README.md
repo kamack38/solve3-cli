@@ -2,6 +2,14 @@
 
 Command-line tool for interacting with [Solve3](https://solve.edu.pl/)
 
+<div align="center">
+  
+  [![Latest version](https://img.shields.io/npm/v/solve3-cli?label=Latest%20verison&style=flat-square)](https://www.npmjs.com/package/solve3-cli)
+  [![Dependencies](https://img.shields.io/librariesio/release/npm/solve3-cli?label=Dependencies&style=flat-square)](https://libraries.io/npm/solve3-cli)
+  ![Downloads per week](https://img.shields.io/npm/dw/solve3-cli?style=flat-square)
+
+</div>
+
 ## Installation
 
 ```shell

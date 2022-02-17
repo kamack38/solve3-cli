@@ -18,7 +18,6 @@
         "cli",
         "typescript",
         "solve3",
-        "pokorski",
         "C++"
     ],
     "files": [
