@@ -4,9 +4,10 @@ import Configstore from 'configstore'
 import { Command } from 'commander'
 import chalk from 'chalk'
 import figures from 'figures'
-import showProblems from './send.js'
-import authenticate from './auth.js'
-import selectContest from './contest.js'
+import showProblems from './commands/send.js'
+import authenticate from './commands/auth.js'
+import selectContest from './commands/contest.js'
+import showRanking from './commands/ranking.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -23,7 +24,7 @@ const getSessionId = () => {
     }
 }
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.1.7')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.0')
 
 program
     .command('login')
@@ -84,6 +85,15 @@ program
     .action((parentId: string, id: string, filePath: string) => {
         const SessionId = getSessionId()
         SessionId ? showProblems(SessionId, parentId, filePath, id) : null
+    })
+
+program
+    .command('rank')
+    .description('Show ranking for a contest')
+    .argument('<id>', 'Contest ID')
+    .action((id: string) => {
+        const SessionId = getSessionId()
+        SessionId ? showRanking(SessionId, id) : null
     })
 
 program.parse()

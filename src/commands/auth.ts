@@ -3,7 +3,7 @@ import axios from 'axios'
 import figures from 'figures'
 import inquirer from 'inquirer'
 import FormData from 'form-data'
-import getCSRFToken from './utils/getCSRFToken.js'
+import getCSRFToken from '../utils/getCSRFToken.js'
 
 const login = async (username: string, password: string) => {
     const formData = new FormData()

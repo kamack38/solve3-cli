@@ -24,6 +24,7 @@ Commands:
   config [option] [value]                Change config option. If value is null prints current value
   contest [id]                           View contest
   send <parentId> [id] [filePath]        Send problem solution
+  rank <id>                              Show ranking for a contest
   help [command]                         display help for command
 ```
 

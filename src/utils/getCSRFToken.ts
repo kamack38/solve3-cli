@@ -3,14 +3,14 @@ import figures from 'figures'
 import axios from 'axios'
 import { JSDOM } from 'jsdom'
 
-const getCSRFToken = async (route: string, csrf_action: string, PHPSessionId?: string) => {
+const getCSRFToken = async (route: string, csrf_action: string, SessionId?: string) => {
     return await axios
         .get(
             `https://solve.edu.pl/${route}`,
-            PHPSessionId
+            SessionId
                 ? {
                       headers: {
-                          Cookie: `PHPSESSID=${PHPSessionId};`,
+                          Cookie: `PHPSESSID=${SessionId};`,
                       },
                   }
                 : {},

@@ -6,8 +6,8 @@ import inquirerFileTreeSelection from 'inquirer-file-tree-selection-prompt'
 import { createReadStream, lstatSync } from 'fs'
 import { extname } from 'path'
 import FormData from 'form-data'
-import getCSRFToken from './utils/getCSRFToken.js'
-import getProblems from './utils/getProblems.js'
+import getCSRFToken from '../utils/getCSRFToken.js'
+import getData from '../utils/getData.js'
 
 const send = async (SessionId: string, problemShortName: string, filePath: string, contestId: string) => {
     const formData = new FormData()
@@ -35,7 +35,7 @@ const send = async (SessionId: string, problemShortName: string, filePath: strin
 }
 
 const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: string) => {
-    const problems = await getProblems(SessionId, contestId)
+    const { problems } = await getData(SessionId, contestId)
     if (problemId && filePath && contestId) {
         const problemShortName = problems.find(({ id }) => id === problemId).short_name
         return await send(SessionId, problemShortName, filePath, contestId)
