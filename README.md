@@ -11,7 +11,7 @@ npm install -g solve3-cli
 ## Usage
 
 ```shell
-Usage: solve3-cli [options] [command]
+Usage: solve3 [options] [command]
 
 Awesome Solve3 Cli built using custom API
 
