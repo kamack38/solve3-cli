@@ -9,12 +9,11 @@ import showProblems from './send.js'
 import authenticate from './auth.js'
 import selectContest from './contest.js'
 
-const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
-const config = new Configstore(packageJson.name)
+const config = new Configstore('solve3-cli')
 
 const program = new Command()
 
-program.name('solve3-cli').description('Awesome Solve3 Cli built using custom API').version('0.1.2')
+program.name('solve3-cli').description('Awesome Solve3 Cli built using custom API').version('0.1.3')
 
 program
     .command('login')

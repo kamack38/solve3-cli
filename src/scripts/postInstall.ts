@@ -1,5 +1,8 @@
-import fs from 'fs'
 import Configstore from 'configstore'
-const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
 
-new Configstore(packageJson.name, { username: '', password: '', authCookie: '', favorites: [] })
+try {
+    new Configstore('solve3-cli', { username: '', password: '', authCookie: '', favorites: [] })
+    console.log('Config file has been created!')
+} catch (err) {
+    console.error(err)
+}
