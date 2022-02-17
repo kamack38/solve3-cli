@@ -49,8 +49,22 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
                     choices: problems,
                 },
             ])
-            .then(async ({ problem }) => await selectFile(SessionId, contestId, problems.find(({ name }) => name === problem).short_name))
+            .then(async ({ problem }) => {
+                const problemObject = problems.find(({ name }) => name === problem)
+                showProblemInfo(problemObject)
+                await selectFile(SessionId, contestId, problemObject.short_name)
+            })
     }
+}
+
+const showProblemInfo = (problemObject: problemObjectType) => {
+    console.log(chalk.blue(figures.info), chalk.cyan('Problem Info'))
+    console.log(chalk.cyan('Name'), ':', chalk.green(problemObject.name))
+    console.log(chalk.cyan('ID'), ':', chalk.green(problemObject.id))
+    console.log(chalk.cyan('Contest ID'), ':', chalk.green(problemObject.contest_id))
+    console.log(chalk.cyan('Problem ID'), ':', chalk.green(problemObject.problem_id))
+    console.log(chalk.cyan('Short name'), ':', chalk.green(problemObject.short_name))
+    console.log(chalk.cyan('Description link'), ':', chalk.green(`https://solve.edu.pl/contests/download_desc/${problemObject.id}`))
 }
 
 type problemObjectType = {

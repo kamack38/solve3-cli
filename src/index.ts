@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import Configstore from 'configstore'
-import fs from 'fs'
 import { Command } from 'commander'
 import chalk from 'chalk'
 import figures from 'figures'
@@ -13,7 +12,18 @@ const config = new Configstore('solve3-cli')
 
 const program = new Command()
 
-program.name('solve3-cli').description('Awesome Solve3 Cli built using custom API').version('0.1.4')
+const getSessionId = () => {
+    const authCookie = config.get('authCookie')
+    if (!authCookie) {
+        console.log(chalk.red(figures.cross), chalk.redBright(`Authentication cookie was not found!`))
+        console.log(chalk.blue(figures.info), chalk.cyan(`Use login command to authenticate`))
+        return undefined
+    } else {
+        return authCookie
+    }
+}
+
+program.name('solve3-cli').description('Awesome Solve3 Cli built using custom API').version('0.1.5')
 
 program
     .command('login')
@@ -61,8 +71,8 @@ program
     .description('View contest')
     .argument('[id]', 'Contest ID')
     .action((contestId: string) => {
-        const SessionId = config.get('authCookie')
-        selectContest(SessionId, contestId)
+        const SessionId = getSessionId()
+        SessionId ? selectContest(SessionId, contestId) : null
     })
 
 program
@@ -72,8 +82,8 @@ program
     .argument('[id]', 'Problem ID')
     .argument('[filePath]', 'File path')
     .action((parentId: string, id: string, filePath: string) => {
-        const SessionId = config.get('authCookie')
-        showProblems(SessionId, parentId, filePath, id)
+        const SessionId = getSessionId()
+        SessionId ? showProblems(SessionId, parentId, filePath, id) : null
     })
 
 program.parse()
