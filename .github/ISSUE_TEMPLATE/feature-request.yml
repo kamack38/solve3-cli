@@ -1,0 +1,23 @@
+name: ✨ Feature request
+description: Suggest an idea for a new feature
+title: '[Feature Request] Short Description'
+labels: ['enhancement']
+assignees:
+  - kamack38
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please make sure to [search for existing issues](https://github.com/kamack38/Solve3-Cli/issues?q=label%3Aenhancement) before filing a new one!
+  - type: input
+    attributes:
+      label: Software Name
+      placeholder: Is this feature connected with any of the existing packages? If yes with which?
+
+  - type: textarea
+    attributes:
+      label: Description
+
+  - type: textarea
+    attributes:
+      label: Additional Info

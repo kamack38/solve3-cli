@@ -1,0 +1,20 @@
+name: ❓ Question
+description: Ask question
+title: '[Question]: '
+labels: ['question']
+assignees:
+  - kamack38
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please make sure to [search for existing questions](https://github.com/kamack38/Solve3-Cli/issues?q=label%3Aquestion) before filing a new one!
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: When asking questions, please make sure you provide all essential information.
+      placeholder: Your question...
+    validations:
+      required: true
