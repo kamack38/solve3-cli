@@ -1,6 +1,6 @@
 {
     "name": "solve3-cli",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "A simple cli to use Solve3 from your terminal",
     "main": "./dist/index.js",
     "bin": {
