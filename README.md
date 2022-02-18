@@ -33,7 +33,96 @@ Commands:
   contest [id]                           View contest
   send <parentId> [id] [filePath]        Send problem solution
   rank <id>                              Show ranking for a contest
-  help [command]                         display help for command
+  favorite [options]                     Add, delete or show favorite contests
+  help [command]                         display help for command                    display help for command
+```
+
+### login
+
+```
+Usage: solve3 login [options] [username] [password]
+
+Login in to Solve
+
+Arguments:
+  username      Solve3 username
+  password      Solve3 password
+
+Options:
+  -c, --config  Login using credentials in config file
+  -h, --help    display help for command
+```
+
+### config
+
+```
+Usage: solve3 config [option] [value]
+
+Change config option. If value is null prints current value
+
+Arguments:
+option Config option name
+value Config option value
+
+Options:
+-h, --help display help for command
+```
+
+### contest
+
+```
+Usage: solve3 contest [options] [id]
+
+View contest
+
+Arguments:
+  id          Contest ID
+
+Options:
+  -h, --help  display help for command
+```
+
+### send
+
+```
+Usage: solve3 send [options] <parentId> [id] [filePath]
+
+Send problem solution
+
+Arguments:
+  parentId    Parent ID
+  id          Problem ID
+  filePath    File path
+
+Options:
+  -h, --help  display help for command
+```
+
+### rank
+
+```
+Usage: solve3 rank [options] <id>
+
+Show ranking for a contest
+
+Arguments:
+  id          Contest ID
+
+Options:
+  -h, --help  display help for command
+```
+
+### favorite
+
+```
+Usage: solve3 favorite [options]
+
+Add, delete or show favorite contests
+
+Options:
+  -a, --add <contestId>     Add contest to favorites
+  -d, --delete <contestId>  Delete contest from favorite contests
+  -h, --help                display help for command
 ```
 
 ### Reference
