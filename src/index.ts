@@ -24,7 +24,7 @@ const getSessionId = () => {
     }
 }
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.0')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.1')
 
 program
     .command('login')

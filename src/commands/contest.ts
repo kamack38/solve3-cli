@@ -5,6 +5,7 @@ import axios from 'axios'
 import getContestData from '../utils/getContestData.js'
 import showProblems from './send.js'
 import showRanking from './ranking.js'
+import getData from '../utils/getData.js'
 
 const getContests = async (SessionId: string, contestId: string = '0') => {
     return axios
@@ -21,25 +22,40 @@ const getContests = async (SessionId: string, contestId: string = '0') => {
         })
 }
 
+const checkParentId = async (SessionId: string, contestId: string) => {
+    if (contestId !== '0' && contestId !== undefined) {
+        const contestData = await getData(SessionId, contestId)
+        return contestData
+    }
+    return null
+}
+
 const selectContest = async (SessionId: string, contestId?: string) => {
     const contestsArr = await getContests(SessionId, contestId)
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId)
     } else {
+        const contestData = await checkParentId(SessionId, contestId)
+        contestData ? contestsArr.unshift(figures.triangleUp) : null
         inquirer
             .prompt([
                 {
                     type: 'list',
                     message: 'Select contest',
-                    name: 'contest',
+                    name: 'selectedContest',
                     choices: contestsArr,
                     loop: false,
                     pageSize: 10,
+                    default: contestData?.contest ? 1 : 0,
                 },
             ])
-            .then(({ contest }) => {
-                const contestInfo = contestsArr.find(({ name }) => name === contest)
-                selectContest(SessionId, contestInfo.id)
+            .then(({ selectedContest }) => {
+                if (figures.triangleUp === selectedContest) {
+                    selectContest(SessionId, contestData.contest.parent)
+                } else {
+                    const contestInfo = contestsArr.find(({ name }) => name === selectedContest)
+                    selectContest(SessionId, contestInfo.id)
+                }
             })
     }
 }
