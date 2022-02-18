@@ -1,3 +1,4 @@
+import Configstore from 'configstore'
 import chalk from 'chalk'
 import figures from 'figures'
 import inquirer from 'inquirer'
@@ -6,6 +7,8 @@ import getContestData from '../utils/getContestData.js'
 import showProblems from './send.js'
 import showRanking from './ranking.js'
 import getData from '../utils/getData.js'
+
+const config = new Configstore('solve3-cli')
 
 const getContests = async (SessionId: string, contestId: string = '0') => {
     return axios
@@ -35,8 +38,19 @@ const selectContest = async (SessionId: string, contestId?: string) => {
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId)
     } else {
+        const favorites = config.get('favorites')
+        if (favorites?.length) {
+            contestsArr.unshift(new inquirer.Separator())
+            favorites.forEach(({ name, id }) => {
+                contestsArr.unshift({ name: `${chalk.yellow(figures.star)} ` + name, id })
+            })
+        }
         const contestData = await checkParentId(SessionId, contestId)
-        contestData ? contestsArr.unshift(figures.triangleUp) : null
+        if (contestData) {
+            contestsArr.unshift(new inquirer.Separator())
+            contestsArr.unshift(figures.triangleUp)
+        }
+        const defaultSelect = contestData?.contest ? 2 : 0 + favorites.length
         inquirer
             .prompt([
                 {
@@ -46,14 +60,14 @@ const selectContest = async (SessionId: string, contestId?: string) => {
                     choices: contestsArr,
                     loop: false,
                     pageSize: 10,
-                    default: contestData?.contest ? 1 : 0,
+                    default: defaultSelect,
                 },
             ])
             .then(({ selectedContest }) => {
                 if (figures.triangleUp === selectedContest) {
                     selectContest(SessionId, contestData.contest.parent)
                 } else {
-                    const contestInfo = contestsArr.find(({ name }) => name === selectedContest)
+                    const contestInfo = contestsArr.find(({ name }) => name === selectedContest.replace(`${figures.star} `, ''))
                     selectContest(SessionId, contestInfo.id)
                 }
             })

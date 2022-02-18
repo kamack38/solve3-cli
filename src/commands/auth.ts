@@ -24,7 +24,7 @@ const login = async (username: string, password: string) => {
         })
 }
 
-const requireLetterOrNumber = (value) => {
+const requireLetterOrNumber = (value: string) => {
     if (/\w/.test(value) || /\d/.test(value)) {
         return true
     }

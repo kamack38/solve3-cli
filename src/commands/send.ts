@@ -52,9 +52,27 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
             .then(async ({ problem }) => {
                 const problemObject = problems.find(({ name }) => name === problem)
                 showProblemInfo(problemObject)
-                await selectFile(SessionId, contestId, problemObject.short_name)
+                await showProblemOptions(SessionId, contestId, problemObject.short_name)
             })
     }
+}
+
+const showProblemOptions = async (SessionId: string, contestId: string, problemShortName: string) => {
+    const choices = ['📄 Send solution', `${chalk.red(figures.cross)} Quit`]
+    return await inquirer
+        .prompt([
+            {
+                type: 'list',
+                name: 'option',
+                message: 'Select option',
+                choices: choices,
+            },
+        ])
+        .then(async ({ option }) => {
+            if (option === '📄 Send solution') {
+                await selectFile(SessionId, contestId, problemShortName)
+            }
+        })
 }
 
 const showProblemInfo = (problemObject: problemObjectType) => {

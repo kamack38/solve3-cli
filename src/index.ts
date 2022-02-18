@@ -2,29 +2,19 @@
 
 import Configstore from 'configstore'
 import { Command } from 'commander'
-import chalk from 'chalk'
-import figures from 'figures'
+import getSessionId from './utils/getSessionId.js'
 import showProblems from './commands/send.js'
 import authenticate from './commands/auth.js'
 import selectContest from './commands/contest.js'
 import showRanking from './commands/ranking.js'
+import changeConfig from './commands/config.js'
+import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
 
 const config = new Configstore('solve3-cli')
 
 const program = new Command()
 
-const getSessionId = () => {
-    const authCookie = config.get('authCookie')
-    if (!authCookie) {
-        console.log(chalk.red(figures.cross), chalk.redBright(`Authentication cookie was not found!`))
-        console.log(chalk.blue(figures.info), chalk.cyan(`Use login command to authenticate`))
-        return undefined
-    } else {
-        return authCookie
-    }
-}
-
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.1')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.2')
 
 program
     .command('login')
@@ -34,12 +24,10 @@ program
     .option('-c, --config', 'Login using credentials in config file')
     .action(async (username: string, password: string, { config: conf }: { config: boolean }) => {
         if (conf) {
-            const username = config.get('username')
-            const password = config.get('password')
-            config.set('authCookie', await authenticate(username, password))
-        } else {
-            config.set('authCookie', await authenticate(username, password))
+            username = config.get('username')
+            password = config.get('password')
         }
+        config.set('authCookie', await authenticate(username, password))
     })
 
 program
@@ -48,23 +36,7 @@ program
     .argument('[option]', 'Config option name')
     .argument('[value]', 'Config option value')
     .action((option: string, value: string) => {
-        if (option) {
-            if (config.has(option)) {
-                if (value) {
-                    config.set(option, value)
-                    console.log(chalk.green(figures.tick), chalk.cyan(option), ':', chalk.green(value))
-                } else {
-                    const val = config.get(option)
-                    console.log(chalk.blue(figures.info), chalk.cyan(option), ':', chalk.green(val))
-                }
-            } else {
-                const availableOptions = Object.keys(config.all).toString().replace(/,/g, ', ')
-                console.log(chalk.red(figures.cross), chalk.redBright(`No option with specified key ${option}`))
-                console.log(chalk.blue(figures.info), chalk.cyan(`Available options: ${availableOptions}`))
-            }
-        } else {
-            console.log(chalk.blue(figures.info), chalk.cyan(config.path))
-        }
+        changeConfig(option, value)
     })
 
 program
@@ -94,6 +66,22 @@ program
     .action((id: string) => {
         const SessionId = getSessionId()
         SessionId ? showRanking(SessionId, id) : null
+    })
+
+program
+    .command('favorite')
+    .description('Add, delete or show favorite contests')
+    .option('-a, --add <contestId>', 'Add contest to favorites')
+    .option('-d, --delete <contestId>', 'Delete contest from favorite contests')
+    .action(async (options: { add: string; delete: string }) => {
+        const SessionId = getSessionId()
+        if (options.add) {
+            await addFavoriteContest(SessionId, options.add)
+        } else if (options.delete) {
+            await deleteFavoriteContest(options.delete)
+        } else {
+            await showFavoriteContests(SessionId)
+        }
     })
 
 program.parse()
