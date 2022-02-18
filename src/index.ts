@@ -7,6 +7,7 @@ import showProblems from './commands/send.js'
 import authenticate from './commands/auth.js'
 import selectContest from './commands/contest.js'
 import showRanking from './commands/ranking.js'
+import showSubmits, { showLatestSubmit } from './commands/submit.js'
 import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
 
@@ -14,7 +15,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.3')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.4')
 
 program
     .command('login')
@@ -32,6 +33,7 @@ program
 
 program
     .command('config')
+    .alias('conf')
     .description('Change config option. If value is null prints current value')
     .argument('[option]', 'Config option name')
     .argument('[value]', 'Config option value')
@@ -41,6 +43,7 @@ program
 
 program
     .command('contest')
+    .alias('cont')
     .description('View contest')
     .argument('[id]', 'Contest ID')
     .action((contestId: string) => {
@@ -60,7 +63,8 @@ program
     })
 
 program
-    .command('rank')
+    .command('ranking')
+    .alias('rank')
     .description('Show ranking for a contest')
     .argument('<id>', 'Contest ID')
     .action((id: string) => {
@@ -70,6 +74,7 @@ program
 
 program
     .command('favorite')
+    .alias('fav')
     .description('Add, delete or show favorite contests')
     .option('-a, --add <contestId>', 'Add contest to favorites')
     .option('-d, --delete <contestId>', 'Delete contest from favorite contests')
@@ -81,6 +86,21 @@ program
             await deleteFavoriteContest(options.delete)
         } else {
             await showFavoriteContests(SessionId)
+        }
+    })
+
+program
+    .command('submit')
+    .alias('sub')
+    .description('Show recent submits')
+    .argument('<id>', 'Contest ID')
+    .option('-l, --last', 'Show latest submit in contest')
+    .action((id: string, { last }: { last: boolean }) => {
+        const SessionId = getSessionId()
+        if (last) {
+            showLatestSubmit(SessionId, id)
+        } else {
+            SessionId ? showSubmits(SessionId, id) : null
         }
     })
 

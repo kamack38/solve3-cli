@@ -6,6 +6,7 @@ import axios from 'axios'
 import getContestData from '../utils/getContestData.js'
 import showProblems from './send.js'
 import showRanking from './ranking.js'
+import showSubmits from './submit.js'
 import getData from '../utils/getData.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 
@@ -90,7 +91,8 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
     const favoriteAddOption = `${chalk.yellow(figures.star)} Add to favorites`
     const favoriteRemoveOption = `${chalk.red(figures.star)} Remove from favorites`
     const favoriteOption = favorites[contestId] ? favoriteRemoveOption : favoriteAddOption
-    const choices = ['❓ Show problems', '📊 Show ranking', favoriteOption, `${chalk.red(figures.cross)} Quit`]
+    const submitsOption = `${chalk.green(figures.nodejs)} Show submits`
+    const choices = ['❓ Show problems', '📊 Show ranking', submitsOption, favoriteOption, `${chalk.red(figures.cross)} Quit`]
     inquirer
         .prompt([
             {
@@ -106,6 +108,8 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                 showProblems(SessionId, contestData.id)
             } else if (option === '📊 Show ranking') {
                 showRanking(SessionId, contestData.id)
+            } else if (option === submitsOption) {
+                showSubmits(SessionId, contestData.id)
             } else if (option === favoriteOption) {
                 if (favoriteOption === favoriteAddOption) {
                     favorites[contestId] = { name: contestData.name, id: contestId }

@@ -29,12 +29,13 @@ Options:
 
 Commands:
   login [options] [username] [password]  Login in to Solve
-  config [option] [value]                Change config option. If value is null prints current value
-  contest [id]                           View contest
+  config|conf [option] [value]           Change config option. If value is null prints current value
+  contest|cont [id]                      View contest
   send <parentId> [id] [filePath]        Send problem solution
-  rank <id>                              Show ranking for a contest
-  favorite [options]                     Add, delete or show favorite contests
-  help [command]                         display help for command                    display help for command
+  ranking|rank <id>                      Show ranking for a contest
+  favorite|fav [options]                 Add, delete or show favorite contests
+  submit|sub [options] <id>              Show recent submits
+  help [command]                         display help for command
 ```
 
 ### login
@@ -56,22 +57,22 @@ Options:
 ### config
 
 ```
-Usage: solve3 config [option] [value]
+Usage: solve3 config|conf [options] [option] [value]
 
 Change config option. If value is null prints current value
 
 Arguments:
-option Config option name
-value Config option value
+  option      Config option name
+  value       Config option value
 
 Options:
--h, --help display help for command
+  -h, --help  display help for command
 ```
 
 ### contest
 
 ```
-Usage: solve3 contest [options] [id]
+Usage: solve3 contest|cont [options] [id]
 
 View contest
 
@@ -98,10 +99,10 @@ Options:
   -h, --help  display help for command
 ```
 
-### rank
+### ranking
 
 ```
-Usage: solve3 rank [options] <id>
+Usage: solve3 ranking|rank [options] <id>
 
 Show ranking for a contest
 
@@ -115,7 +116,7 @@ Options:
 ### favorite
 
 ```
-Usage: solve3 favorite [options]
+Usage: solve3 favorite|fav [options]
 
 Add, delete or show favorite contests
 
@@ -123,6 +124,21 @@ Options:
   -a, --add <contestId>     Add contest to favorites
   -d, --delete <contestId>  Delete contest from favorite contests
   -h, --help                display help for command
+```
+
+### submit
+
+```
+Usage: solve3 submit|sub [options] <id>
+
+Show recent submits
+
+Arguments:
+  id          Contest ID
+
+Options:
+  -l, --last  Show latest submit in contest
+  -h, --help  display help for command
 ```
 
 ### Reference
