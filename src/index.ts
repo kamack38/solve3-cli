@@ -10,11 +10,11 @@ import showRanking from './commands/ranking.js'
 import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
 
-const config = new Configstore('solve3-cli')
+const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', favorites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.2')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.3')
 
 program
     .command('login')
