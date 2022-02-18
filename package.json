@@ -10,9 +10,7 @@
     "preferGlobal": true,
     "scripts": {
         "dev": "npm run build && node ./dist/index.js",
-        "build": "tsc",
-        "postinstall": "node ./dist/scripts/postInstall.js",
-        "preuninstall": "node ./dist/scripts/preUninstall.js"
+        "build": "tsc"
     },
     "keywords": [
         "cli",
