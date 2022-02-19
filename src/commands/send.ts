@@ -8,6 +8,7 @@ import { extname } from 'path'
 import FormData from 'form-data'
 import getCSRFToken from '../utils/getCSRFToken.js'
 import getData from '../utils/getData.js'
+import showProblemDescription from '../commands/description.js'
 
 const send = async (SessionId: string, problemShortName: string, filePath: string, contestId: string) => {
     const formData = new FormData()
@@ -52,13 +53,13 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
             .then(async ({ problem }) => {
                 const problemObject = problems.find(({ name }) => name === problem)
                 showProblemInfo(problemObject)
-                await showProblemOptions(SessionId, contestId, problemObject.short_name)
+                await showProblemOptions(SessionId, contestId, problemObject.short_name, problemObject.id)
             })
     }
 }
 
-const showProblemOptions = async (SessionId: string, contestId: string, problemShortName: string) => {
-    const choices = ['📄 Send solution', `${chalk.red(figures.cross)} Quit`]
+const showProblemOptions = async (SessionId: string, contestId: string, problemShortName: string, id: string) => {
+    const choices = ['📦 Send solution', '📄 Show description', `${chalk.red(figures.cross)} Quit`]
     return await inquirer
         .prompt([
             {
@@ -69,8 +70,10 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
             },
         ])
         .then(async ({ option }) => {
-            if (option === '📄 Send solution') {
+            if (option === '📦 Send solution') {
                 await selectFile(SessionId, contestId, problemShortName)
+            } else if (option === '📄 Show description') {
+                await showProblemDescription(id)
             }
         })
 }

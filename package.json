@@ -1,6 +1,6 @@
 {
     "name": "solve3-cli",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "A simple cli to use Solve3 from your terminal",
     "main": "./dist/index.js",
     "bin": {
@@ -49,6 +49,7 @@
         "inquirer": "^8.2.0",
         "inquirer-file-tree-selection-prompt": "^1.0.15",
         "jsdom": "^19.0.0",
+        "pdf2html": "^2.6.3",
         "table": "^6.8.0"
     }
 }

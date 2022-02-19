@@ -10,12 +10,13 @@ import showRanking from './commands/ranking.js'
 import showSubmits, { showLatestSubmit } from './commands/submit.js'
 import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
+import showProblemDescription from './commands/description.js'
 
 const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', favorites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.4')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.5')
 
 program
     .command('login')
@@ -60,6 +61,15 @@ program
     .action((parentId: string, id: string, filePath: string) => {
         const SessionId = getSessionId()
         SessionId ? showProblems(SessionId, parentId, filePath, id) : null
+    })
+
+program
+    .command('description')
+    .alias('desc')
+    .description('Show problem description')
+    .argument('<id>', 'Problem ID')
+    .action((id: string) => {
+        showProblemDescription(id)
     })
 
 program

@@ -41,7 +41,7 @@ const handleSubmitStatus = (status: string) => {
     } else if (status == '') {
         return ''
     }
-    return console.log(chalk.redBright(figures.cross), chalk.redBright('Error no contest badge found with status'), chalk.red(status))
+    return console.log(chalk.red(figures.cross), chalk.redBright('Error no contest badge found with status'), chalk.red(status))
 }
 
 const showSubmits = async (SessionId: string, contestId?: string) => {

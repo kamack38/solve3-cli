@@ -23,7 +23,7 @@ const getContests = async (SessionId: string, contestId: string = '0') => {
             return res.data.records
         })
         .catch((error) => {
-            console.log(chalk.redBright(figures.cross), error)
+            console.log(chalk.red(figures.cross), error)
         })
 }
 

@@ -29,9 +29,11 @@ Options:
 
 Commands:
   login [options] [username] [password]  Login in to Solve
-  config|conf [option] [value]           Change config option. If value is null prints current value
+  config|conf [option] [value]           Change config option. If value is null
+                                         prints current value
   contest|cont [id]                      View contest
   send <parentId> [id] [filePath]        Send problem solution
+  description|desc <id>                  Show problem description
   ranking|rank <id>                      Show ranking for a contest
   favorite|fav [options]                 Add, delete or show favorite contests
   submit|sub [options] <id>              Show recent submits
@@ -94,6 +96,20 @@ Arguments:
   parentId    Parent ID
   id          Problem ID
   filePath    File path
+
+Options:
+  -h, --help  display help for command
+```
+
+### description
+
+```
+Usage: solve3 description|desc [options] <id>
+
+Show problem description
+
+Arguments:
+  id          Problem ID
 
 Options:
   -h, --help  display help for command
