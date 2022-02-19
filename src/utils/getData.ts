@@ -2,9 +2,9 @@ import chalk from 'chalk'
 import figures from 'figures'
 import axios from 'axios'
 
-const getData = async (PHPSessionId: string, contestId: string) => {
+const getData = async (PHPSessionId: string, contestId: string, page: number = 1) => {
     return axios
-        .get(`https://solve.edu.pl/contests/get_page/${contestId}/1/`, {
+        .get(`https://solve.edu.pl/contests/get_page/${contestId}/${page}/`, {
             headers: {
                 Cookie: `PHPSESSID=${PHPSessionId};`,
             },
