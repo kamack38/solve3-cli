@@ -13,9 +13,15 @@ const showProblemDescription = async (problemId: string) => {
                     .replace(/Zadanie/, chalk.cyan('Zadanie'))
                     .replace(/Limit pamięci/gi, chalk.cyan('Limit pamięci'))
                     .replace(/Limit czasu/gi, chalk.cyan('Limit czasu'))
-                    .replace(/Wejście/gi, chalk.cyan('Wejście'))
-                    .replace(/Wyjście/gi, chalk.cyan('Wyjście'))
-                    .replace(/OGRANICZENIA/gi, chalk.cyan('Ograniczenia')),
+                    .replace(/Wejście/gi, chalk.cyanBright('Wejście'))
+                    .replace(/Wyjście/gi, chalk.cyanBright('Wyjście'))
+                    .replace(/OGRANICZENIA/gi, chalk.cyan('Ograniczenia'))
+                    .replace(/PRZYKŁAD/i, chalk.cyan('Przykłady'))
+                    .replace(/ę/gi, 'ę')
+                    .replace(/ą/gi, 'ą')
+                    .replace(/ć/gi, 'ć')
+                    .replace(/ś/gi, 'ś')
+                    .replace(/ż/gi, 'ż'),
             )
         }
     })

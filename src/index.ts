@@ -16,7 +16,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.5')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.6')
 
 program
     .command('login')
