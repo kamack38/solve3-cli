@@ -71,9 +71,11 @@ const selectContest = async (SessionId: string, contestId?: string) => {
                 if (figures.triangleUp === selectedContest) {
                     selectContest(SessionId, contestData.contest.parent)
                 } else if (favorites[selectedContest]) {
+                    config.set('lastContest', favorites[selectedContest].id)
                     selectContest(SessionId, favorites[selectedContest].id)
                 } else {
                     const contestInfo = contestsArr.find(({ name }) => name === selectedContest.replace(`${figures.star} `, ''))
+                    config.set('lastContest', contestInfo.id)
                     selectContest(SessionId, contestInfo.id)
                 }
             })

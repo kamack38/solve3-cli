@@ -3,6 +3,7 @@
 import Configstore from 'configstore'
 import { Command } from 'commander'
 import getSessionId from './utils/getSessionId.js'
+import getLastContest from './utils/getLastContest.js'
 import showProblems from './commands/send.js'
 import authenticate from './commands/auth.js'
 import selectContest from './commands/contest.js'
@@ -12,11 +13,11 @@ import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
 import showProblemDescription from './commands/description.js'
 
-const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', favorites: {} })
+const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '', favorites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.8')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.9')
 
 program
     .command('login')
@@ -47,9 +48,15 @@ program
     .alias('cont')
     .description('View contest')
     .argument('[id]', 'Contest ID')
-    .action((contestId: string) => {
+    .option('-l, --last', 'View last contest')
+    .action((contestId: string, { last }: { last: boolean }) => {
         const SessionId = getSessionId()
-        SessionId ? selectContest(SessionId, contestId) : null
+        if (last) {
+            const lastContest = getLastContest()
+            SessionId ? (lastContest ? selectContest(SessionId, lastContest) : null) : null
+        } else {
+            SessionId ? selectContest(SessionId, contestId) : null
+        }
     })
 
 program
