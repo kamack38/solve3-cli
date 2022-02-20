@@ -80,13 +80,32 @@ const selectContest = async (SessionId: string, contestId?: string) => {
     }
 }
 
+const zeroPad = (val: number) => {
+    if (val < 10) return '0' + val
+    return val
+}
+
+const printTime = (time: number) => {
+    if (time < 0) return 'Contest ended'
+    else if (time > 24 * 3600) return Math.floor(time / (24 * 3600)) + ' d'
+    else {
+        const hours = Math.floor(time / 3600)
+        const minutes = Math.floor(time / 60) % 60
+        const seconds = time % 60
+        return hours + ':' + zeroPad(minutes) + ':' + zeroPad(seconds)
+    }
+}
+
 const showContestInfo = async (SessionId: string, contestId?: string) => {
     const contestData = await getContestData(SessionId, contestId)
+    const currentTime = Math.floor(new Date().getTime() / 1000)
+    const endTime = Math.floor(new Date(contestData.end_time).getTime() / 1000)
     console.log(chalk.blue(figures.info), chalk.cyan('Contest Info'))
     console.log(chalk.cyan('Name'), ':', chalk.green(contestData.name))
     console.log(chalk.cyan('ID'), ':', chalk.green(contestData.id))
     console.log(chalk.cyan('Parent ID'), ':', chalk.green(contestData.parent))
     console.log(chalk.cyan('Short name'), ':', chalk.green(contestData.short_name))
+    console.log(chalk.cyan('Time left'), ':', chalk.green(printTime(endTime - currentTime)))
     const favorites = config.get('favorites')
     const favoriteAddOption = `${chalk.yellow(figures.star)} Add to favorites`
     const favoriteRemoveOption = `${chalk.red(figures.star)} Remove from favorites`

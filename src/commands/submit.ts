@@ -1,4 +1,3 @@
-import Configstore from 'configstore'
 import chalk from 'chalk'
 import figures from 'figures'
 import inquirer from 'inquirer'
@@ -120,7 +119,7 @@ const showSubmitDetails = async (SessionId: string, submitId: string) => {
     }
 
     console.log(table(tableData, tableConfig))
-    console.log(compilationLog)
+    compilationLog ? console.log(compilationLog) : null
 }
 
 export const showLatestSubmit = async (SessionId: string, contestId: string) => {
