@@ -2,41 +2,24 @@ import Configstore from 'configstore'
 import chalk from 'chalk'
 import figures from 'figures'
 import inquirer from 'inquirer'
-import axios from 'axios'
-import getContestData from '../utils/getContestData.js'
+import getSolveData from '../utils/getSolveData.js'
 import showProblems from './send.js'
 import showRanking from './ranking.js'
 import showSubmits from './submit.js'
-import getData from '../utils/getData.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 
 const config = new Configstore('solve3-cli')
 
-const getContests = async (SessionId: string, contestId: string = '0') => {
-    return axios
-        .get(`https://solve.edu.pl/contests/get_list?param=${contestId}`, {
-            headers: {
-                Cookie: `PHPSESSID=${SessionId};`,
-            },
-        })
-        .then((res) => {
-            return res.data.records
-        })
-        .catch((error) => {
-            console.log(chalk.red(figures.cross), error)
-        })
-}
-
 const checkParentId = async (SessionId: string, contestId: string) => {
     if (contestId !== '0' && contestId !== undefined) {
-        const contestData = await getData(SessionId, contestId)
+        const contestData = await getSolveData(SessionId, 'pageData', contestId, 1)
         return contestData
     }
     return null
 }
 
-const selectContest = async (SessionId: string, contestId?: string) => {
-    const contestsArr = await getContests(SessionId, contestId)
+const selectContest = async (SessionId: string, contestId: string = '0') => {
+    const { records: contestsArr } = await getSolveData(SessionId, 'contests', contestId)
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId)
     } else {
@@ -99,7 +82,7 @@ const printTime = (time: number) => {
 }
 
 const showContestInfo = async (SessionId: string, contestId?: string) => {
-    const contestData = await getContestData(SessionId, contestId)
+    const contestData = await getSolveData(SessionId, 'contestData', contestId)
     const currentTime = Math.floor(new Date().getTime() / 1000)
     const endTime = Math.floor(new Date(contestData.end_time).getTime() / 1000)
     console.log(chalk.blue(figures.info), chalk.cyan('Contest Info'))

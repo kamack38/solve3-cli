@@ -1,8 +1,7 @@
 import chalk from 'chalk'
 import figures from 'figures'
 import inquirer from 'inquirer'
-import getSubmitDetails from '../utils/getSubmitDetails.js'
-import getData from '../utils/getData.js'
+import getSolveData from '../utils/getSolveData.js'
 import { table } from 'table'
 
 type submitObject = {
@@ -46,7 +45,7 @@ const handleSubmitStatus = (status: string) => {
 }
 
 const showSubmits = async (SessionId: string, contestId?: string, page: number = 1) => {
-    const { submits, contest, submits_count } = await getData(SessionId, contestId, page)
+    const { submits, contest, submits_count } = await getSolveData(SessionId, 'pageData', contestId, page)
     const contestName = contest.name
     const submitsCount = Number(submits_count)
 
@@ -102,7 +101,7 @@ const showSubmits = async (SessionId: string, contestId?: string, page: number =
 }
 
 const showSubmitDetails = async (SessionId: string, submitId: string) => {
-    const { tests, submit } = await getSubmitDetails(SessionId, submitId)
+    const { tests, submit } = await getSolveData(SessionId, 'submitDetails', submitId)
     const compilationLog = submit.compilation_log
     const tableData = tests.map(({ name, time, mem, mem_limit, points, status, comment }: testObject) => {
         const submitStatus = handleSubmitStatus(status)
@@ -123,7 +122,7 @@ const showSubmitDetails = async (SessionId: string, submitId: string) => {
 }
 
 export const showLatestSubmit = async (SessionId: string, contestId: string) => {
-    const { submits } = await getData(SessionId, contestId)
+    const { submits } = await getSolveData(SessionId, 'pageData', contestId)
     showSubmitDetails(SessionId, submits[0].id)
 }
 

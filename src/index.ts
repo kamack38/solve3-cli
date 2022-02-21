@@ -2,6 +2,8 @@
 
 import Configstore from 'configstore'
 import { Command } from 'commander'
+import chalk from 'chalk'
+import figures from 'figures'
 import getSessionId from './utils/getSessionId.js'
 import getLastContest from './utils/getLastContest.js'
 import showProblems from './commands/send.js'
@@ -17,7 +19,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.2.9')
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.0').showSuggestionAfterError()
 
 program
     .command('login')
@@ -102,7 +104,7 @@ program
         } else if (options.delete) {
             await deleteFavoriteContest(options.delete)
         } else {
-            await showFavoriteContests(SessionId)
+            showFavoriteContests()
         }
     })
 
@@ -111,7 +113,7 @@ program
     .alias('sub')
     .description('Show recent submits')
     .argument('<id>', 'Contest ID')
-    .option('-l, --last', 'Show latest submit in contest')
+    .option('-L, --latest', 'Show latest submit in contest')
     .action((id: string, { last }: { last: boolean }) => {
         const SessionId = getSessionId()
         if (last) {
@@ -121,4 +123,11 @@ program
         }
     })
 
-program.parse()
+program.configureOutput({
+    writeOut: (str) => process.stdout.write(`[OUT] ${str}`),
+    writeErr: (str) => process.stdout.write(`${chalk.red(figures.cross)} ${str}`),
+    // Highlight errors in color.
+    outputError: (str, write) => write(chalk.redBright(str)),
+})
+
+await program.parseAsync()

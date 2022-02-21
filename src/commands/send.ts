@@ -7,7 +7,7 @@ import { createReadStream, lstatSync } from 'fs'
 import { extname } from 'path'
 import FormData from 'form-data'
 import getCSRFToken from '../utils/getCSRFToken.js'
-import getData from '../utils/getData.js'
+import getSolveData from '../utils/getSolveData.js'
 import showProblemDescription from '../commands/description.js'
 
 const send = async (SessionId: string, problemShortName: string, filePath: string, contestId: string) => {
@@ -36,12 +36,12 @@ const send = async (SessionId: string, problemShortName: string, filePath: strin
 }
 
 const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: string) => {
-    const { problems } = await getData(SessionId, contestId)
+    const { problems } = await getSolveData(SessionId, 'pageData', contestId)
     if (problemId && filePath && contestId) {
         const problemShortName = problems.find(({ id }) => id === problemId).short_name
-        return await send(SessionId, problemShortName, filePath, contestId)
+        await send(SessionId, problemShortName, filePath, contestId)
     } else {
-        return await inquirer
+        await inquirer
             .prompt([
                 {
                     type: 'list',
@@ -60,7 +60,7 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
 
 const showProblemOptions = async (SessionId: string, contestId: string, problemShortName: string, id: string) => {
     const choices = ['📦 Send solution', '📄 Show description', `${chalk.red(figures.cross)} Quit`]
-    return await inquirer
+    await inquirer
         .prompt([
             {
                 type: 'list',
@@ -104,7 +104,7 @@ const isCppFile = (value) => {
 
 const selectFile = async (SessionId: string, contestId: string, problemShortName: string) => {
     inquirer.registerPrompt('file-tree-selection', inquirerFileTreeSelection)
-    return await inquirer
+    await inquirer
         .prompt([
             {
                 type: 'file-tree-selection',

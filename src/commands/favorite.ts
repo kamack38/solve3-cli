@@ -1,12 +1,12 @@
 import Configstore from 'configstore'
 import chalk from 'chalk'
 import figures from 'figures'
-import getContestData from '../utils/getContestData.js'
+import getSolveData from '../utils/getSolveData.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 
 const config = new Configstore('solve3-cli')
 
-export const showFavoriteContests = async (SessionId: string) => {
+export const showFavoriteContests = () => {
     const favorites = config.get('favorites')
     if (isNotEmpty(favorites)) {
         console.log(chalk.yellow(figures.star), chalk.cyan('Favorite contests'))
@@ -20,7 +20,7 @@ export const showFavoriteContests = async (SessionId: string) => {
 
 export const addFavoriteContest = async (SessionId: string, contestId: string) => {
     const favorites = config.get('favorites')
-    const { id, name } = await getContestData(SessionId, contestId)
+    const { id, name } = await getSolveData(SessionId, 'contestData', contestId)
     if (id) {
         favorites[contestId] = { id, name }
         config.set('favorites', favorites)

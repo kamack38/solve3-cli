@@ -20,7 +20,7 @@ const login = async (username: string, password: string) => {
             return cookie
         })
         .catch((error) => {
-            console.log(chalk.redBright(figures.cross), error)
+            console.log(chalk.red(figures.cross), error)
         })
 }
 
