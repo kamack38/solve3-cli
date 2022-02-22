@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import figures from 'figures'
 import inquirer from 'inquirer'
+import downloadSubmitCode from './download.js'
 import getSolveData from '../utils/getSolveData.js'
 import { table } from 'table'
 
@@ -95,7 +96,29 @@ const showSubmits = async (SessionId: string, contestId?: string, page: number =
             } else if (option === previousPageOption) {
                 showSubmits(SessionId, contestId, page - 1)
             } else if (option !== quitOption) {
-                showSubmitDetails(SessionId, option)
+                showSubmitOptions(SessionId, option)
+            }
+        })
+}
+
+const showSubmitOptions = (SessionId: string, submitId: string) => {
+    const downloadCodeOption = '💾 Download code'
+    const showSubmitDetailsOption = '📄 Show submit details'
+    const choices = [showSubmitDetailsOption, downloadCodeOption]
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                message: 'Select option',
+                name: 'option',
+                choices: choices,
+            },
+        ])
+        .then(({ option }) => {
+            if (option === downloadCodeOption) {
+                downloadSubmitCode(SessionId, submitId)
+            } else if (option === showSubmitDetailsOption) {
+                showSubmitDetails(SessionId, submitId)
             }
         })
 }

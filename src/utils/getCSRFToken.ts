@@ -25,6 +25,7 @@ const getCSRFToken = async (route: string, csrf_action: string, SessionId?: stri
         })
         .catch((error) => {
             console.log(chalk.redBright(figures.cross), error)
+            return null
         })
 }
 export default getCSRFToken

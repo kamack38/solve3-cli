@@ -19,7 +19,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.0').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.1').showSuggestionAfterError()
 
 program
     .command('login')
@@ -97,12 +97,12 @@ program
     .description('Add, delete or show favorite contests')
     .option('-a, --add <contestId>', 'Add contest to favorites')
     .option('-d, --delete <contestId>', 'Delete contest from favorite contests')
-    .action(async (options: { add: string; delete: string }) => {
+    .action((options: { add: string; delete: string }) => {
         const SessionId = getSessionId()
         if (options.add) {
-            await addFavoriteContest(SessionId, options.add)
+            addFavoriteContest(SessionId, options.add)
         } else if (options.delete) {
-            await deleteFavoriteContest(options.delete)
+            deleteFavoriteContest(options.delete)
         } else {
             showFavoriteContests()
         }

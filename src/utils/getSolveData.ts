@@ -8,6 +8,7 @@ const routes = {
     contestData: 'contests/get_contest_data/',
     description: 'contests/download_desc/',
     submitDetails: 'contests/get_report/',
+    submitSource: 'contests/download_code/',
 }
 
 const getRoute = (routeName: string, param: string, suffix: string | number) => {
@@ -32,6 +33,7 @@ const getSolveData = async (PHPSessionId: string, routeName: string, param?: str
         })
         .catch((error) => {
             console.log(chalk.redBright(figures.cross), error)
+            return null
         })
 }
 

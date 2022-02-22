@@ -30,7 +30,7 @@ export const addFavoriteContest = async (SessionId: string, contestId: string) =
     }
 }
 
-export const deleteFavoriteContest = async (contestId: string) => {
+export const deleteFavoriteContest = (contestId: string) => {
     const favorites = config.get('favorites')
     if (favorites[contestId]) {
         const contestName = favorites[contestId].name
