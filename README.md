@@ -33,11 +33,11 @@ Commands:
   login [options] [username] [password]  Login in to Solve
   config|conf [option] [value]           Change config option. If value is null prints current value
   contest|cont [options] [id]            View contest
-  send <parentId> [id] [filePath]        Send problem solution
+  send <contestId> [id] [filePath]       Send problem solution
   description|desc <id>                  Show problem description
   ranking|rank <id>                      Show ranking for a contest
   favorite|fav [options]                 Add, delete or show favorite contests
-  submit|sub [options] [id]              Show recent submits. If id is not provided, shows submits in the last contest
+  submit|sub [options] [id]              Show recent submits
   help [command]                         display help for command
 ```
 
@@ -89,12 +89,12 @@ Options:
 ### send
 
 ```
-Usage: solve3 send [options] <parentId> [id] [filePath]
+Usage: solve3 send [options] <contestId> [id] [filePath]
 
 Send problem solution
 
 Arguments:
-  parentId    Parent ID
+  contestId   Contest ID
   id          Problem ID
   filePath    File path
 

@@ -37,9 +37,14 @@ const send = async (SessionId: string, problemShortName: string, filePath: strin
 
 const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: string) => {
     const { problems } = await getSolveData(SessionId, 'pageData', contestId)
-    if (problemId && filePath && contestId) {
+    if (problemId) {
         const problemShortName = problems.find(({ id }) => id === problemId).short_name
-        await send(SessionId, problemShortName, filePath, contestId)
+        console.log(chalk.blue(figures.info), chalk.cyan('Short name'), ':', chalk.green(problemShortName))
+        if (filePath) {
+            send(SessionId, problemShortName, filePath, contestId)
+        } else {
+            selectFile(SessionId, contestId, problemShortName)
+        }
     } else {
         await inquirer
             .prompt([
@@ -78,16 +83,6 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
         })
 }
 
-const showProblemInfo = (problemObject: problemObjectType) => {
-    console.log(chalk.blue(figures.info), chalk.cyan('Problem Info'))
-    console.log(chalk.cyan('Name'), ':', chalk.green(problemObject.name))
-    console.log(chalk.cyan('ID'), ':', chalk.green(problemObject.id))
-    console.log(chalk.cyan('Contest ID'), ':', chalk.green(problemObject.contest_id))
-    console.log(chalk.cyan('Problem ID'), ':', chalk.green(problemObject.problem_id))
-    console.log(chalk.cyan('Short name'), ':', chalk.green(problemObject.short_name))
-    console.log(chalk.cyan('Description link'), ':', chalk.green(`https://solve.edu.pl/contests/download_desc/${problemObject.id}`))
-}
-
 type problemObjectType = {
     id: string
     contest_id: string
@@ -96,7 +91,17 @@ type problemObjectType = {
     name: string
 }
 
-const isCppFile = (value) => {
+const showProblemInfo = ({ name, id, contest_id, problem_id, short_name }: problemObjectType) => {
+    console.log(chalk.blue(figures.info), chalk.cyan('Problem Info'))
+    console.log(chalk.cyan('Name'), ':', chalk.green(name))
+    console.log(chalk.cyan('ID'), ':', chalk.green(id))
+    console.log(chalk.cyan('Contest ID'), ':', chalk.green(contest_id))
+    console.log(chalk.cyan('Problem ID'), ':', chalk.green(problem_id))
+    console.log(chalk.cyan('Short name'), ':', chalk.green(short_name))
+    console.log(chalk.cyan('Description link'), ':', chalk.green(`https://solve.edu.pl/contests/download_desc/${id}`))
+}
+
+const isCppFile = (value: string) => {
     if (extname(value) === '.cpp' || extname(value) === '') {
         return true
     }

@@ -19,7 +19,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.2').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.3').showSuggestionAfterError()
 
 program
     .command('login')
@@ -64,12 +64,12 @@ program
 program
     .command('send')
     .description('Send problem solution')
-    .argument('<parentId>', 'Parent ID')
+    .argument('<contestId>', 'Contest ID')
     .argument('[id]', 'Problem ID')
     .argument('[filePath]', 'File path')
-    .action((parentId: string, id: string, filePath: string) => {
+    .action((contestId: string, id: string, filePath: string) => {
         const SessionId = getSessionId()
-        SessionId ? showProblems(SessionId, parentId, filePath, id) : null
+        SessionId ? showProblems(SessionId, contestId, id, filePath) : null
     })
 
 program
