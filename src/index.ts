@@ -15,11 +15,11 @@ import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
 import showProblemDescription from './commands/description.js'
 
-const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '', favorites: {} })
+const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', favorites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.1').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.2').showSuggestionAfterError()
 
 program
     .command('login')
@@ -112,19 +112,30 @@ program
     .command('submit')
     .alias('sub')
     .description('Show recent submits')
-    .argument('<id>', 'Contest ID')
-    .option('-L, --latest', 'Show latest submit in contest')
-    .action((id: string, { last }: { last: boolean }) => {
+    .argument('[id]', 'Contest ID. If not provided uses last contest ID')
+    .option('-L, --latest', 'Show details of the latest submit in the contest')
+    .action((id: string, { latest }: { latest: boolean }) => {
         const SessionId = getSessionId()
-        if (last) {
-            showLatestSubmit(SessionId, id)
-        } else {
-            SessionId ? showSubmits(SessionId, id) : null
+        if (SessionId) {
+            if (id) {
+                if (latest) {
+                    showLatestSubmit(SessionId, id)
+                } else {
+                    showSubmits(SessionId, id)
+                }
+            } else {
+                const lastContest = config.get('lastContest')
+                if (latest) {
+                    showLatestSubmit(SessionId, lastContest)
+                } else {
+                    showSubmits(SessionId, lastContest)
+                }
+            }
         }
     })
 
 program.configureOutput({
-    writeOut: (str) => process.stdout.write(`[OUT] ${str}`),
+    writeOut: (str) => process.stdout.write(str),
     writeErr: (str) => process.stdout.write(`${chalk.red(figures.cross)} ${str}`),
     // Highlight errors in color.
     outputError: (str, write) => write(chalk.redBright(str)),

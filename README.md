@@ -12,6 +12,8 @@ Command-line tool for interacting with [Solve3](https://solve.edu.pl/)
 
 ## Installation
 
+Installation requires [Node.js](https://nodejs.org/)
+
 ```shell
 npm install -g solve3-cli
 ```
@@ -29,14 +31,13 @@ Options:
 
 Commands:
   login [options] [username] [password]  Login in to Solve
-  config|conf [option] [value]           Change config option. If value is null
-                                         prints current value
-  contest|cont [id]                      View contest
+  config|conf [option] [value]           Change config option. If value is null prints current value
+  contest|cont [options] [id]            View contest
   send <parentId> [id] [filePath]        Send problem solution
   description|desc <id>                  Show problem description
   ranking|rank <id>                      Show ranking for a contest
   favorite|fav [options]                 Add, delete or show favorite contests
-  submit|sub [options] <id>              Show recent submits
+  submit|sub [options] [id]              Show recent submits. If id is not provided, shows submits in the last contest
   help [command]                         display help for command
 ```
 
@@ -145,16 +146,16 @@ Options:
 ### submit
 
 ```
-Usage: solve3 submit|sub [options] <id>
+Usage: solve3 submit|sub [options] [id]
 
 Show recent submits
 
 Arguments:
-  id          Contest ID
+  id            Contest ID. If not provided uses last contest ID
 
 Options:
-  -l, --last  Show latest submit in contest
-  -h, --help  display help for command
+  -L, --latest  Show details of the latest submit in the contest
+  -h, --help    display help for command
 ```
 
 ### Reference

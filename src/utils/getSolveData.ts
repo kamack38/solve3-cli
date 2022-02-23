@@ -19,13 +19,13 @@ const getRoute = (routeName: string, param: string, suffix: string | number) => 
     }
 }
 
-const getSolveData = async (PHPSessionId: string, routeName: string, param?: string, suffix?: string | number) => {
+const getSolveData = async (SessionId: string, routeName: string, param?: string, suffix?: string | number) => {
     const route = getRoute(routeName, param, suffix)
     return await axios
         .get(route, {
             baseURL: 'https://solve.edu.pl/',
             headers: {
-                Cookie: `PHPSESSID=${PHPSessionId};`,
+                Cookie: `PHPSESSID=${SessionId};`,
             },
         })
         .then((res) => {

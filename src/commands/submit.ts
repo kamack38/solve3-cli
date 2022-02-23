@@ -39,6 +39,8 @@ const handleSubmitStatus = (status: string) => {
         return chalk.bgBlackBright.whiteBright(' CE ')
     } else if (status === '<span class="badge badge-info">Błąd wykonania</span>') {
         return chalk.bgMagenta.whiteBright(' RE ')
+    } else if (status === '<span class="badge">?</span>') {
+        return chalk.bgYellow.blackBright(' ? ')
     } else if (status == '') {
         return ''
     }
@@ -145,8 +147,8 @@ const showSubmitDetails = async (SessionId: string, submitId: string) => {
 }
 
 export const showLatestSubmit = async (SessionId: string, contestId: string) => {
-    const { submits } = await getSolveData(SessionId, 'pageData', contestId)
-    showSubmitDetails(SessionId, submits[0].id)
+    const { submits } = await getSolveData(SessionId, 'pageData', contestId, 1)
+    submits?.length ? showSubmitDetails(SessionId, submits[0].id) : console.log(chalk.red(figures.cross), chalk.redBright('No contest was found with ID:'), chalk.red(contestId))
 }
 
 export default showSubmits
