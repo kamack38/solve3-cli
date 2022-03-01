@@ -1,49 +1,42 @@
-import chalk from 'chalk'
-import axios from 'axios'
-import figures from 'figures'
 import inquirer from 'inquirer'
 import inquirerFileTreeSelection from 'inquirer-file-tree-selection-prompt'
-import { createReadStream, lstatSync } from 'fs'
+import { lstatSync } from 'fs'
 import { extname } from 'path'
-import FormData from 'form-data'
-import getCSRFToken from '../utils/getCSRFToken.js'
+import showProblemDescription from './description.js'
 import getSolveData from '../utils/getSolveData.js'
-import showProblemDescription from '../commands/description.js'
+import postSolveData, { createSubmitData } from '../utils/postSolveData.js'
+import { printInfo, printError, printSuccess, printTip } from '../utils/messages.js'
+import { contestSubmit, pageData } from '../lib/routes.js'
+import { sendSolutionOption, descriptionOption, quitOption } from '../lib/options.js'
 
-const send = async (SessionId: string, problemShortName: string, filePath: string, contestId: string) => {
-    const formData = new FormData()
-    formData.append('csrf_action', 'contest_submit')
-    formData.append('csrf_token', await getCSRFToken(`contests/view/${contestId}`, 'contest_submit', SessionId))
-    formData.append('contest_submit[problem]', problemShortName)
-    formData.append('contest_submit[solution_file]', createReadStream(filePath, 'utf8'))
-    return axios
-        .post(`https://solve.edu.pl/contests/submit_solution/${contestId}`, formData, {
-            headers: {
-                ...formData.getHeaders(),
-                Cookie: `PHPSESSID=${SessionId};`,
-            },
-        })
+const send = async (SessionId: string, problemShortName: string, id: string, filePath: string) => {
+    const contestSendData = await createSubmitData(SessionId, id, problemShortName, filePath)
+    postSolveData(SessionId, contestSubmit + id, contestSendData)
         .then((res) => {
-            if (res.request.res.responseUrl === `https://solve.edu.pl/contests/view/${contestId}`) {
-                console.log(chalk.green(figures.tick), chalk.greenBright('File has been successfully sent!'))
+            const responseUrl = res.request.res.responseUrl
+            if (responseUrl === `https://solve.edu.pl/contests/view/${id}`) {
+                printSuccess('File has been successfully sent!')
             } else {
-                console.log(chalk.red(figures.cross), chalk.redBright('Error while sending the file'))
+                printError('Error while sending the file')
             }
         })
         .catch((error) => {
-            console.log(chalk.red(figures.cross), error)
+            printError(error)
         })
 }
 
 const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: string) => {
-    const { problems } = await getSolveData(SessionId, 'pageData', contestId)
+    const { problems } = await getSolveData(SessionId, pageData, contestId)
     if (problemId) {
         const problemShortName = problems.find(({ id }) => id === problemId).short_name
-        console.log(chalk.blue(figures.info), chalk.cyan('Short name'), ':', chalk.green(problemShortName))
+        printTip(`Short name : ${problemShortName}`)
         if (filePath) {
-            send(SessionId, problemShortName, filePath, contestId)
+            send(SessionId, problemShortName, contestId, filePath)
         } else {
-            selectFile(SessionId, contestId, problemShortName)
+            const filePath = await selectFile()
+            if (filePath) {
+                send(SessionId, problemShortName, contestId, filePath)
+            }
         }
     } else {
         await inquirer
@@ -64,7 +57,7 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
 }
 
 const showProblemOptions = async (SessionId: string, contestId: string, problemShortName: string, id: string) => {
-    const choices = ['📦 Send solution', '📄 Show description', `${chalk.red(figures.cross)} Quit`]
+    const choices = [sendSolutionOption, descriptionOption, quitOption]
     await inquirer
         .prompt([
             {
@@ -75,10 +68,16 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
             },
         ])
         .then(async ({ option }) => {
-            if (option === '📦 Send solution') {
-                await selectFile(SessionId, contestId, problemShortName)
-            } else if (option === '📄 Show description') {
-                await showProblemDescription(id)
+            switch (option) {
+                case sendSolutionOption:
+                    const filePath = await selectFile()
+                    if (filePath) {
+                        send(SessionId, problemShortName, contestId, filePath)
+                    }
+                    break
+                case descriptionOption:
+                    await showProblemDescription(id)
+                    break
             }
         })
 }
@@ -92,39 +91,39 @@ type problemObjectType = {
 }
 
 const showProblemInfo = ({ name, id, contest_id, problem_id, short_name }: problemObjectType) => {
-    console.log(chalk.blue(figures.info), chalk.cyan('Problem Info'))
-    console.log(chalk.cyan('Name'), ':', chalk.green(name))
-    console.log(chalk.cyan('ID'), ':', chalk.green(id))
-    console.log(chalk.cyan('Contest ID'), ':', chalk.green(contest_id))
-    console.log(chalk.cyan('Problem ID'), ':', chalk.green(problem_id))
-    console.log(chalk.cyan('Short name'), ':', chalk.green(short_name))
-    console.log(chalk.cyan('Description link'), ':', chalk.green(`https://solve.edu.pl/contests/download_desc/${id}`))
+    printTip('Problem Info')
+    printInfo('Name', name)
+    printInfo('ID', id)
+    printInfo('Contest ID', contest_id)
+    printInfo('Problem ID', problem_id)
+    printInfo('Short name', short_name)
+    printInfo('Description link', `https://solve.edu.pl/contests/download_desc/${id}`)
 }
 
-const isCppFile = (value: string) => {
-    if (extname(value) === '.cpp' || extname(value) === '') {
+const isCppFile = (value: string, ext: string = '.cpp') => {
+    if (extname(value) === ext || extname(value) === '') {
         return true
     }
 }
 
-const selectFile = async (SessionId: string, contestId: string, problemShortName: string) => {
+export const selectFile = async (ext?: string) => {
     inquirer.registerPrompt('file-tree-selection', inquirerFileTreeSelection)
-    await inquirer
+    return await inquirer
         .prompt([
             {
                 type: 'file-tree-selection',
                 name: 'filePath',
                 message: 'Select file',
                 onlyShowValid: true,
-                validate: isCppFile,
+                validate: (val: string) => isCppFile(val, ext),
             },
         ])
         .then(async ({ filePath }) => {
             if (!lstatSync(filePath).isDirectory()) {
-                await send(SessionId, problemShortName, filePath, contestId)
+                return filePath
             } else {
-                console.error(chalk.red(figures.cross), chalk.redBright("You can't select a directory"))
-                console.log(chalk.blue(figures.info), chalk.cyan('Press <tab> to expand the directory and select a valid file'))
+                printError("You can't select a directory")
+                printTip('Press <tab> to expand the directory and select a valid file')
             }
         })
 }

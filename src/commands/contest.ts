@@ -2,24 +2,25 @@ import Configstore from 'configstore'
 import chalk from 'chalk'
 import figures from 'figures'
 import inquirer from 'inquirer'
-import getSolveData from '../utils/getSolveData.js'
 import showProblems from './send.js'
 import showRanking from './ranking.js'
 import showSubmits from './submit.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
+import getSolveData from '../utils/getSolveData.js'
+import { printInfo, printSuccess, printTip } from '../utils/messages.js'
+import { contests, contestData, pageData } from '../lib/routes.js'
+import { problemsOption, submitsOption, rankingOption, favoriteAddOption, favoriteRemoveOption, quitOption } from '../lib/options.js'
 
 const config = new Configstore('solve3-cli')
 
 const checkParentId = async (SessionId: string, contestId: string) => {
     if (contestId !== '0' && contestId !== undefined) {
-        const contestData = await getSolveData(SessionId, 'pageData', contestId, 1)
-        return contestData
+        return await getSolveData(SessionId, pageData, contestId, 1)
     }
-    return null
 }
 
 const selectContest = async (SessionId: string, contestId: string = '0') => {
-    const { records: contestsArr } = await getSolveData(SessionId, 'contests', contestId)
+    const { records: contestsArr } = await getSolveData(SessionId, contests, contestId)
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId)
     } else {
@@ -65,38 +66,30 @@ const selectContest = async (SessionId: string, contestId: string = '0') => {
     }
 }
 
-const zeroPad = (val: number) => {
-    if (val < 10) return '0' + val
-    return val
-}
-
-const printTime = (time: number) => {
-    if (time < 0) return 'Contest ended'
-    else if (time > 24 * 3600) return Math.floor(time / (24 * 3600)) + ' d'
-    else {
-        const hours = Math.floor(time / 3600)
-        const minutes = Math.floor(time / 60) % 60
-        const seconds = time % 60
-        return hours + ':' + zeroPad(minutes) + ':' + zeroPad(seconds)
+const printTime = (endTime: string) => {
+    const timeDiff = Math.floor(new Date(endTime).getTime() / 1000) - Math.floor(new Date().getTime() / 1000)
+    switch (true) {
+        case timeDiff < 0:
+            return 'Contest ended'
+        case timeDiff > 24 * 3600:
+            return Math.floor(timeDiff / (24 * 3600)) + ' d'
+        default:
+            return new Date(timeDiff).toLocaleTimeString()
     }
 }
 
 const showContestInfo = async (SessionId: string, contestId?: string) => {
-    const contestData = await getSolveData(SessionId, 'contestData', contestId)
-    const currentTime = Math.floor(new Date().getTime() / 1000)
-    const endTime = Math.floor(new Date(contestData.end_time).getTime() / 1000)
-    console.log(chalk.blue(figures.info), chalk.cyan('Contest Info'))
-    console.log(chalk.cyan('Name'), ':', chalk.green(contestData.name))
-    console.log(chalk.cyan('ID'), ':', chalk.green(contestData.id))
-    console.log(chalk.cyan('Parent ID'), ':', chalk.green(contestData.parent))
-    console.log(chalk.cyan('Short name'), ':', chalk.green(contestData.short_name))
-    console.log(chalk.cyan('Time left'), ':', chalk.green(printTime(endTime - currentTime)))
+    const { name, id, parent, short_name, end_time } = await getSolveData(SessionId, contestData, contestId)
+    printTip('Contest Info')
+    printInfo('Name', name)
+    printInfo('ID', id)
+    printInfo('Parent ID', parent)
+    printInfo('Short name', short_name)
+    printInfo('Time left', printTime(end_time))
+
     const favorites = config.get('favorites')
-    const favoriteAddOption = `${chalk.yellow(figures.star)} Add to favorites`
-    const favoriteRemoveOption = `${chalk.red(figures.star)} Remove from favorites`
     const favoriteOption = favorites[contestId] ? favoriteRemoveOption : favoriteAddOption
-    const submitsOption = `${chalk.green(figures.nodejs)} Show submits`
-    const choices = ['❓ Show problems', '📊 Show ranking', submitsOption, favoriteOption, `${chalk.red(figures.cross)} Quit`]
+    const choices = [problemsOption, rankingOption, submitsOption, favoriteOption, quitOption]
     inquirer
         .prompt([
             {
@@ -104,25 +97,29 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                 message: 'Select option',
                 name: 'option',
                 choices: choices,
-                loop: false,
+                loop: true,
             },
         ])
         .then(({ option }) => {
-            if (option === '❓ Show problems') {
-                showProblems(SessionId, contestData.id)
-            } else if (option === '📊 Show ranking') {
-                showRanking(SessionId, contestData.id)
-            } else if (option === submitsOption) {
-                showSubmits(SessionId, contestData.id)
-            } else if (option === favoriteOption) {
-                if (favoriteOption === favoriteAddOption) {
-                    favorites[contestId] = { name: contestData.name, id: contestId }
-                    config.set('favorites', favorites)
-                } else {
-                    delete favorites[contestId]
-                    config.set('favorites', favorites)
-                }
-                console.log(chalk.green(`${figures.tick} Favorites has been updated!`))
+            switch (option) {
+                case problemsOption:
+                    showProblems(SessionId, id)
+                    break
+                case rankingOption:
+                    showRanking(SessionId, id)
+                    break
+                case submitsOption:
+                    showSubmits(SessionId, id)
+                    break
+                case favoriteOption:
+                    if (favoriteOption === favoriteAddOption) {
+                        favorites[contestId] = { name: name, id: contestId }
+                        config.set('favorites', favorites)
+                    } else {
+                        delete favorites[contestId]
+                        config.set('favorites', favorites)
+                    }
+                    printSuccess(`${figures.tick} Favorites has been updated!`)
             }
         })
 }

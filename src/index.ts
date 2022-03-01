@@ -11,18 +11,20 @@ import authenticate from './commands/auth.js'
 import selectContest from './commands/contest.js'
 import showRanking from './commands/ranking.js'
 import showSubmits, { showLatestSubmit } from './commands/submit.js'
+import selectTask from './commands/tasks.js'
 import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
 import showProblemDescription from './commands/description.js'
 
-const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', favorites: {} })
+const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', lastTask: '', favorites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.3.3').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.4.0').showSuggestionAfterError()
 
 program
     .command('login')
+    .alias('auth')
     .description('Login in to Solve')
     .argument('[username]', 'Solve3 username')
     .argument('[password]', 'Solve3 password')
@@ -33,6 +35,18 @@ program
             password = config.get('password')
         }
         config.set('authCookie', await authenticate(username, password))
+    })
+
+program
+    .command('logout')
+    .description('Logout from Solve')
+    .option('-r, --remove', 'Remove login data saved in config')
+    .action(({ remove }: { remove: boolean }) => {
+        if (remove) {
+            config.set('username', '')
+            config.set('password', '')
+        }
+        config.set('authCookie', '')
     })
 
 program
@@ -130,6 +144,22 @@ program
                 } else {
                     showSubmits(SessionId, lastContest)
                 }
+            }
+        }
+    })
+
+program
+    .command('task')
+    .description('Show tasks')
+    .argument('[query]', 'Query to search tasks. If not provided shows all tasks')
+    .option('-p, --page <page>', 'Show tasks on the specified page')
+    .action((query: string, { page }: { page: number }) => {
+        const SessionId = getSessionId()
+        if (SessionId) {
+            if (query) {
+                selectTask(SessionId, page, query)
+            } else {
+                selectTask(SessionId, page)
             }
         }
     })

@@ -1,30 +1,33 @@
-import chalk from 'chalk'
-import figures from 'figures'
 import axios from 'axios'
 import { JSDOM } from 'jsdom'
+import { printError } from '../utils/messages.js'
 
 const getCSRFToken = async (route: string, csrf_action: string, SessionId?: string) => {
     return await axios
         .get(
-            `https://solve.edu.pl/${route}`,
+            route,
             SessionId
                 ? {
+                      baseURL: 'https://solve.edu.pl/',
                       headers: {
                           Cookie: `PHPSESSID=${SessionId};`,
                       },
                   }
-                : {},
+                : {
+                      baseURL: 'https://solve.edu.pl/',
+                  },
         )
         .then((res) => {
             const dom = new JSDOM(res.data)
             const token = dom.window.document.querySelector(`input[name='csrf_action'][value='${csrf_action}']+input[name='csrf_token']`)?.getAttribute('value')
             if (!token) {
-                console.error(chalk.red(figures.cross), chalk.redBright.bold('CSRF token could not be retrieved!'))
+                printError('CSRF token could not be retrieved!')
+                return ''
             }
             return token
         })
         .catch((error) => {
-            console.log(chalk.redBright(figures.cross), error)
+            printError(error)
             return null
         })
 }

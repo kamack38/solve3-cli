@@ -1,9 +1,10 @@
 import pdf2html from 'pdf2html'
 import figures from 'figures'
 import chalk from 'chalk'
+import { contestDescription } from '../lib/routes.js'
 
-const showProblemDescription = async (problemId: string) => {
-    pdf2html.text(`https://solve.edu.pl/contests/download_desc/${problemId}`, (err, pdfText) => {
+const showProblemDescription = async (problemId: string, route: string = contestDescription) => {
+    pdf2html.text(`https://solve.edu.pl/${route}${problemId}`, (err, pdfText: string) => {
         if (err) {
             console.error(chalk.red(figures.cross), chalk.redBright('Conversion error: ' + err))
         } else {
@@ -21,7 +22,8 @@ const showProblemDescription = async (problemId: string) => {
                     .replace(/ą/gi, 'ą')
                     .replace(/ć/gi, 'ć')
                     .replace(/ś/gi, 'ś')
-                    .replace(/ż/gi, 'ż'),
+                    .replace(/ż/g, 'ż')
+                    .replace(/ź/g, 'ź'),
             )
         }
     })

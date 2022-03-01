@@ -1,9 +1,12 @@
 import chalk from 'chalk'
 import figures from 'figures'
 import inquirer from 'inquirer'
+import { table } from 'table'
 import downloadSubmitCode from './download.js'
 import getSolveData from '../utils/getSolveData.js'
-import { table } from 'table'
+import { printError, printInfo, printSuccess, printTip } from '../utils/messages.js'
+import { pageData, submitDetails } from '../lib/routes.js'
+import { nextPageOption, previousPageOption, quitOption, downloadCodeOption, showSubmitDetailsOption } from '../lib/options.js'
 
 type submitObject = {
     id: string
@@ -27,28 +30,29 @@ type testObject = {
 }
 
 const handleSubmitStatus = (status: string) => {
-    if (status === '<span class="badge badge-success">OK</span>') {
-        return chalk.bgGreen.whiteBright(' OK ')
-    } else if (status === '<span class="badge badge-important">Błędna odpowiedź</span>') {
-        return chalk.bgRed.whiteBright(' WA ')
-    } else if (status === '<span class="badge badge-warning">Limit czasu przekroczony</span>') {
-        return chalk.bgHex('#ff7518').whiteBright(' TLE ')
-    } else if (status === '<span class="badge badge-inverse">Naruszenie bezpieczeństwa</span>') {
-        return chalk.bgBlack.whiteBright(' RV ')
-    } else if (status === '<span class="badge badge-inverse">Błąd kompilacji</span>') {
-        return chalk.bgBlackBright.whiteBright(' CE ')
-    } else if (status === '<span class="badge badge-info">Błąd wykonania</span>') {
-        return chalk.bgMagenta.whiteBright(' RE ')
-    } else if (status === '<span class="badge">?</span>') {
-        return chalk.bgYellow.blackBright(' ? ')
-    } else if (status == '') {
-        return ''
+    switch (status) {
+        case '<span class="badge badge-success">OK</span>':
+            return chalk.bgGreen.whiteBright(' OK ')
+        case '<span class="badge badge-important">Błędna odpowiedź</span>':
+            return chalk.bgRed.whiteBright(' WA ')
+        case '<span class="badge badge-warning">Limit czasu przekroczony</span>':
+            return chalk.bgHex('#ff7518').whiteBright(' TLE ')
+        case '<span class="badge badge-inverse">Naruszenie bezpieczeństwa</span>':
+            return chalk.bgBlack.whiteBright(' RV ')
+        case '<span class="badge badge-inverse">Błąd kompilacji</span>':
+            return chalk.bgBlackBright.whiteBright(' CE ')
+        case '<span class="badge badge-info">Błąd wykonania</span>':
+            return chalk.bgMagenta.whiteBright(' RE ')
+        case '<span class="badge">?</span>':
+            return chalk.bgYellow.blackBright(' ? ')
+        case '':
+            return ''
     }
-    return console.log(chalk.red(figures.cross), chalk.redBright('Error no contest badge found with status'), chalk.red(status))
+    printError('Error no contest badge found with status: ' + status)
 }
 
 const showSubmits = async (SessionId: string, contestId?: string, page: number = 1) => {
-    const { submits, contest, submits_count } = await getSolveData(SessionId, 'pageData', contestId, page)
+    const { submits, contest, submits_count } = await getSolveData(SessionId, pageData, contestId, page)
     const contestName = contest.name
     const submitsCount = Number(submits_count)
 
@@ -68,9 +72,6 @@ const showSubmits = async (SessionId: string, contestId?: string, page: number =
     }
     console.log(table(tableData, tableConfig))
     const choices = submits.map(({ id }) => id)
-    const quitOption = `${chalk.red(figures.cross)} Quit`
-    const nextPageOption = `${figures.arrowRight} Next page`
-    const previousPageOption = `${figures.arrowLeft} Previous page`
 
     const additionalOptions = [quitOption]
 
@@ -93,19 +94,23 @@ const showSubmits = async (SessionId: string, contestId?: string, page: number =
             },
         ])
         .then(({ option }) => {
-            if (option === nextPageOption) {
-                showSubmits(SessionId, contestId, page + 1)
-            } else if (option === previousPageOption) {
-                showSubmits(SessionId, contestId, page - 1)
-            } else if (option !== quitOption) {
-                showSubmitOptions(SessionId, option)
+            switch (option) {
+                case nextPageOption:
+                    showSubmits(SessionId, contestId, page + 1)
+                    break
+                case previousPageOption:
+                    showSubmits(SessionId, contestId, page - 1)
+                    break
+                case quitOption:
+                    break
+                default:
+                    showSubmitOptions(SessionId, option)
+                    break
             }
         })
 }
 
 const showSubmitOptions = (SessionId: string, submitId: string) => {
-    const downloadCodeOption = '💾 Download code'
-    const showSubmitDetailsOption = '📄 Show submit details'
     const choices = [showSubmitDetailsOption, downloadCodeOption]
     inquirer
         .prompt([
@@ -117,16 +122,19 @@ const showSubmitOptions = (SessionId: string, submitId: string) => {
             },
         ])
         .then(({ option }) => {
-            if (option === downloadCodeOption) {
-                downloadSubmitCode(SessionId, submitId)
-            } else if (option === showSubmitDetailsOption) {
-                showSubmitDetails(SessionId, submitId)
+            switch (option) {
+                case downloadCodeOption:
+                    downloadSubmitCode(SessionId, submitId)
+                    break
+                case showSubmitDetailsOption:
+                    showSubmitDetails(SessionId, submitId)
+                    break
             }
         })
 }
 
 const showSubmitDetails = async (SessionId: string, submitId: string) => {
-    const { tests, submit } = await getSolveData(SessionId, 'submitDetails', submitId)
+    const { tests, submit } = await getSolveData(SessionId, submitDetails, submitId)
     const compilationLog = submit.compilation_log
     const tableData = tests.map(({ name, time, mem, mem_limit, points, status, comment }: testObject) => {
         const submitStatus = handleSubmitStatus(status)
@@ -147,8 +155,8 @@ const showSubmitDetails = async (SessionId: string, submitId: string) => {
 }
 
 export const showLatestSubmit = async (SessionId: string, contestId: string) => {
-    const { submits } = await getSolveData(SessionId, 'pageData', contestId, 1)
-    submits?.length ? showSubmitDetails(SessionId, submits[0].id) : console.log(chalk.red(figures.cross), chalk.redBright('No contest was found with ID:'), chalk.red(contestId))
+    const { submits } = await getSolveData(SessionId, pageData, contestId, 1)
+    submits?.length ? showSubmitDetails(SessionId, submits[0].id) : printError('No contest was found with ID:' + contestId)
 }
 
 export default showSubmits

@@ -1,14 +1,14 @@
-import chalk from 'chalk'
 import axios from 'axios'
-import figures from 'figures'
 import inquirer from 'inquirer'
 import FormData from 'form-data'
 import getCSRFToken from '../utils/getCSRFToken.js'
+import { printSuccess, printError } from '../utils/messages.js'
+import { loginRoute } from '../lib/routes.js'
 
 const login = async (username: string, password: string) => {
     const formData = new FormData()
     formData.append('csrf_action', 'user_login')
-    formData.append('csrf_token', await getCSRFToken('users/login', 'user_login'))
+    formData.append('csrf_token', await getCSRFToken(loginRoute, 'user_login'))
     formData.append('user_login[login]', username)
     formData.append('user_login[password]', password)
     formData.append('submit_user_login', 'Zaloguj')
@@ -16,11 +16,11 @@ const login = async (username: string, password: string) => {
         .post('https://solve.edu.pl/users/login', formData, { headers: formData.getHeaders() })
         .then((res) => {
             const cookie = res.headers['set-cookie'][0].replace(/\;.*/, '').replace(/.*\=/, '')
-            console.log(chalk.green(figures.tick), chalk.green('Successfully logged in'))
+            printSuccess('Successfully logged in')
             return cookie
         })
         .catch((error) => {
-            console.log(chalk.red(figures.cross), error)
+            printError(error)
         })
 }
 
