@@ -2,11 +2,12 @@ import pdf2html from 'pdf2html'
 import figures from 'figures'
 import chalk from 'chalk'
 import { contestDescription } from '../lib/routes.js'
+import { printError } from '../utils/messages.js'
 
 const showProblemDescription = async (problemId: string, route: string = contestDescription) => {
     pdf2html.text(`https://solve.edu.pl/${route}${problemId}`, (err, pdfText: string) => {
         if (err) {
-            console.error(chalk.red(figures.cross), chalk.redBright('Conversion error: ' + err))
+            printError('Conversion error: ' + err)
         } else {
             console.log(
                 pdfText

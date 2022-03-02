@@ -26,25 +26,27 @@ Usage: solve3 [options] [command]
 Awesome Solve3 Cli built using custom API
 
 Options:
-  -V, --version                          output the version number
-  -h, --help                             display help for command
+  -V, --version                               output the version number
+  -h, --help                                  display help for command
 
 Commands:
-  login [options] [username] [password]  Login in to Solve
-  config|conf [option] [value]           Change config option. If value is null prints current value
-  contest|cont [options] [id]            View contest
-  send <contestId> [id] [filePath]       Send problem solution
-  description|desc <id>                  Show problem description
-  ranking|rank <id>                      Show ranking for a contest
-  favorite|fav [options]                 Add, delete or show favorite contests
-  submit|sub [options] [id]              Show recent submits
-  help [command]                         display help for command
+  login|auth [options] [username] [password]  Login in to Solve
+  logout [options]                            Logout from Solve
+  config|conf [option] [value]                Change config option. If value is null prints current value
+  contest|cont [options] [id]                 View contest
+  send <contestId> [id] [filePath]            Send problem solution
+  description|desc <id>                       Show problem description
+  ranking|rank <id>                           Show ranking for a contest
+  favorite|fav [options]                      Add, delete or show favorite contests
+  submit|sub [options] [id]                   Show recent submits
+  task [options] [query]                      Show tasks
+  help [command]                              display help for command
 ```
 
 ### login
 
 ```
-Usage: solve3 login [options] [username] [password]
+Usage: solve3 login|auth [options] [username] [password]
 
 Login in to Solve
 
@@ -54,6 +56,18 @@ Arguments:
 
 Options:
   -c, --config  Login using credentials in config file
+  -h, --help    display help for command
+```
+
+### logout
+
+```
+Usage: solve3 logout [options]
+
+Logout from Solve
+
+Options:
+  -r, --remove  Remove login data saved in config
   -h, --help    display help for command
 ```
 
@@ -84,6 +98,21 @@ Arguments:
 
 Options:
   -h, --help  display help for command
+```
+
+### task
+
+```
+Usage: solve3 task [options] [query]
+
+Show tasks
+
+Arguments:
+  query              Query to search tasks. If not provided shows all tasks
+
+Options:
+  -p, --page <page>  Show tasks on the specified page
+  -h, --help         display help for command
 ```
 
 ### send
