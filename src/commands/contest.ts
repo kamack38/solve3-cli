@@ -119,7 +119,7 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                         delete favorites[contestId]
                         config.set('favorites', favorites)
                     }
-                    printSuccess(`${figures.tick} Favorites has been updated!`)
+                    printSuccess('Favorites has been updated!')
             }
         })
 }
