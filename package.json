@@ -25,10 +25,10 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/kamack38/Solve3-Cli.git"
+        "url": "https://github.com/kamack38/solve3-cli.git"
     },
     "bugs": {
-        "url": "https://github.com/kamack38/Solve3-Cli/issues"
+        "url": "https://github.com/kamack38/solve3-cli/issues"
     },
     "funding": "https://ko-fi.com/kamack38",
     "devDependencies": {
