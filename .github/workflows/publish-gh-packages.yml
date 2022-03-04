@@ -20,6 +20,12 @@ jobs:
         with:
           node-version: 16
           registry-url: https://npm.pkg.github.com/
+      - name: Change name
+        uses: deef0000dragon1/json-edit-action/@v1
+        env:
+          KEY: name
+          VALUE: '@kamack38/solve3-cli'
+          FILE: package.json
       - run: npm ci
       - run: npm run build
       - run: npm publish --registry https://npm.pkg.github.com/
