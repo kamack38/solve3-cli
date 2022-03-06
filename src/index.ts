@@ -20,7 +20,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.4.1').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.4.2').showSuggestionAfterError()
 
 program
     .command('login')
