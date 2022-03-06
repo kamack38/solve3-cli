@@ -3,6 +3,7 @@ import chalk from 'chalk'
 import figures from 'figures'
 import getSolveData from '../utils/getSolveData.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
+import { contestData } from '../lib/routes.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -20,7 +21,7 @@ export const showFavoriteContests = () => {
 
 export const addFavoriteContest = async (SessionId: string, contestId: string) => {
     const favorites = config.get('favorites')
-    const { id, name } = await getSolveData(SessionId, 'contestData', contestId)
+    const { id, name } = await getSolveData(SessionId, contestData, contestId)
     if (id) {
         favorites[contestId] = { id, name }
         config.set('favorites', favorites)

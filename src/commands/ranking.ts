@@ -2,6 +2,7 @@ import chalk from 'chalk'
 import chroma from 'chroma-js'
 import { table } from 'table'
 import getSolveData from '../utils/getSolveData.js'
+import { pageData } from '../lib/routes.js'
 
 type rankingObject = {
     name: string
@@ -15,7 +16,7 @@ const setResultColor = (result: number, maxValue: number = 100) => {
 }
 
 const showRanking = async (SessionId: string, id: string) => {
-    const { ranking, contest }: { ranking: rankingObject[]; contest: { name: string } } = await getSolveData(SessionId, 'pageData', id)
+    const { ranking, contest }: { ranking: rankingObject[]; contest: { name: string } } = await getSolveData(SessionId, pageData, id)
     const contestName = contest.name
 
     const tableData = ranking.map(({ name, result, rank_details }: rankingObject) => {
