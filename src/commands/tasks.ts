@@ -4,14 +4,15 @@ import showProblemDescription from './description.js'
 import { selectFile } from './send.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printError, printInfo, printSuccess, printTip } from '../utils/messages.js'
-import { tasks, taskDescription, taskSubmit, submitStatus } from '../lib/routes.js'
-import { descriptionOption, sendSolutionOption, quitOption, nextPageOption, previousPageOption } from '../lib/options.js'
+import { tasks, taskDescription, taskSubmit } from '../lib/routes.js'
+import { descriptionOption, sendSolutionOption, submitsOption, quitOption, nextPageOption, previousPageOption } from '../lib/options.js'
 import postSolveData, { createTaskSubmitData } from '../utils/postSolveData.js'
+import showStatus from './status.js'
 
 const config = new Configstore('solve3-cli')
 
 const selectTask = async (SessionId: string, page: number = 1, query: string = '') => {
-    const { records, total_pages } = await getSolveData(SessionId, tasks, page, query, '&query=')
+    const { records, total_pages } = await getSolveData(SessionId, tasks, '', { page, query })
     const choices = [...records]
     const additionalOptions = [quitOption]
     let defaultOption = 1
@@ -61,7 +62,7 @@ export const showTaskInfo = async (SessionId: string, taskId: string, taskName: 
     printInfo('Short name', taskShortName)
     printInfo('Level', taskLevel)
     printInfo('ID', taskId)
-    const choices = [descriptionOption, sendSolutionOption, quitOption]
+    const choices = [descriptionOption, sendSolutionOption, submitsOption, quitOption]
     inquirer
         .prompt([
             {
@@ -94,6 +95,8 @@ export const showTaskInfo = async (SessionId: string, taskId: string, taskName: 
                             })
                     }
                     break
+                case submitsOption:
+                    showStatus(SessionId, taskName, 1)
             }
         })
 }

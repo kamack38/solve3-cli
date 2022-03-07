@@ -15,6 +15,7 @@ import selectTask from './commands/tasks.js'
 import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
 import showProblemDescription from './commands/description.js'
+import showStatus from './commands/status.js'
 
 const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', lastTask: '', favorites: {} })
 
@@ -125,7 +126,7 @@ program
 program
     .command('submit')
     .alias('sub')
-    .description('Show recent submits')
+    .description('Show recent contest submits')
     .argument('[id]', 'Contest ID. If not provided uses last contest ID')
     .option('-L, --latest', 'Show details of the latest submit in the contest')
     .action((id: string, { latest }: { latest: boolean }) => {
@@ -145,6 +146,19 @@ program
                     showSubmits(SessionId, lastContest)
                 }
             }
+        }
+    })
+
+program
+    .command('status')
+    .description('Show recent submits')
+    .argument('[query]', 'Status query')
+    .option('-p, --page <page>', 'Show submits on specified page')
+    .option('-m, --my', 'Show only my submits')
+    .action((query: string, { page, my }: { page: string; my: boolean }) => {
+        const SessionId = getSessionId()
+        if (SessionId) {
+            showStatus(SessionId, query, page, my)
         }
     })
 

@@ -15,7 +15,7 @@ const config = new Configstore('solve3-cli')
 
 const checkParentId = async (SessionId: string, contestId: string) => {
     if (contestId !== '0' && contestId !== undefined) {
-        return await getSolveData(SessionId, pageData, contestId, 1)
+        return await getSolveData(SessionId, pageData, contestId + '/' + 1)
     }
 }
 

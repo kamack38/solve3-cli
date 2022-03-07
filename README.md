@@ -177,7 +177,7 @@ Options:
 ```
 Usage: solve3 submit|sub [options] [id]
 
-Show recent submits
+Show recent contest submits
 
 Arguments:
   id            Contest ID. If not provided uses last contest ID
@@ -185,6 +185,22 @@ Arguments:
 Options:
   -L, --latest  Show details of the latest submit in the contest
   -h, --help    display help for command
+```
+
+### status
+
+```
+Usage: solve3 status [options] [query]
+
+Show recent submits
+
+Arguments:
+  query              Status query
+
+Options:
+  -p, --page <page>  Show submits on specified page
+  -m, --my           Show only my submits
+  -h, --help         display help for command
 ```
 
 ### Reference

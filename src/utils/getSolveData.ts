@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { printError } from '../utils/messages.js'
 
-const getSolveData = async (SessionId: string, route: string, param: string | number = '', suffix?: string | number, suffixSeparator?: string) => {
+const getSolveData = async (SessionId: string, route: string, suffix: string | number = '', params?: object) => {
     return await axios
-        .get(route + param + (suffix ? (suffixSeparator ? suffixSeparator + suffix : '/' + suffix) : ''), {
+        .get(route + suffix, {
             baseURL: 'https://solve.edu.pl/',
             headers: {
                 Cookie: `PHPSESSID=${SessionId};`,
             },
+            params,
         })
         .then((res) => res.data)
         .catch((error) => {
