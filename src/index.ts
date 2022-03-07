@@ -21,7 +21,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.5.0').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.5.1').showSuggestionAfterError()
 
 program
     .command('login')
@@ -155,7 +155,7 @@ program
     .argument('[query]', 'Status query')
     .option('-p, --page <page>', 'Show submits on specified page')
     .option('-m, --my', 'Show only my submits')
-    .action((query: string, { page, my }: { page: string; my: boolean }) => {
+    .action((query: string, { page, my }: { page: number; my: boolean }) => {
         const SessionId = getSessionId()
         if (SessionId) {
             showStatus(SessionId, query, page, my)
