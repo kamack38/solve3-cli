@@ -9,7 +9,7 @@ import isNotEmpty from '../utils/isNotEmpty.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printInfo, printSuccess, printTip } from '../utils/messages.js'
 import { contests, contestData, pageData } from '../lib/routes.js'
-import { problemsOption, submitsOption, rankingOption, favoriteAddOption, favoriteRemoveOption, quitOption } from '../lib/options.js'
+import { problemsOption, submitsOption, rankingOption, favoriteAddOption, favoriteRemoveOption, backOption, quitOption } from '../lib/options.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -89,7 +89,7 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
 
     const favorites = config.get('favorites')
     const favoriteOption = favorites[contestId] ? favoriteRemoveOption : favoriteAddOption
-    const choices = [problemsOption, rankingOption, submitsOption, favoriteOption, quitOption]
+    const choices = [backOption, problemsOption, rankingOption, submitsOption, favoriteOption, quitOption]
     inquirer
         .prompt([
             {
@@ -120,6 +120,8 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                         config.set('favorites', favorites)
                     }
                     printSuccess('Favorites has been updated!')
+                case backOption:
+                    selectContest(SessionId, parent)
             }
         })
 }

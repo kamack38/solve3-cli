@@ -13,3 +13,4 @@ export const favoriteRemoveOption = `${chalk.red(figures.star)} Remove from favo
 export const nextPageOption = `${figures.arrowRight} Next page`
 export const previousPageOption = `${figures.arrowLeft} Previous page`
 export const quitOption = `${chalk.red(figures.cross)} Quit`
+export const backOption = `${chalk.blue(figures.triangleLeft)} Back`
