@@ -19,9 +19,10 @@ const showProblemDescription = async (problemId: string, route: string = contest
                     .replace(/Wyjście/gi, chalk.cyanBright('Wyjście'))
                     .replace(/OGRANICZENIA/gi, chalk.cyan('Ograniczenia'))
                     .replace(/PRZYKŁAD/i, chalk.cyan('Przykłady'))
-                    .replace(/ę/gi, 'ę')
                     .replace(/ą/gi, 'ą')
+                    .replace(/ę/gi, 'ę')
                     .replace(/ć/gi, 'ć')
+                    .replace(/ń/g, 'ń')
                     .replace(/ś/gi, 'ś')
                     .replace(/ż/g, 'ż')
                     .replace(/ź/g, 'ź'),

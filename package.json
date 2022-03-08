@@ -1,6 +1,6 @@
 {
     "name": "solve3-cli",
-    "version": "0.5.2",
+    "version": "0.5.3",
     "description": "A simple cli to use Solve3 from your terminal",
     "main": "./dist/index.js",
     "bin": {
@@ -41,7 +41,7 @@
     },
     "dependencies": {
         "axios": "^0.26.0",
-        "chalk": "^5.0.0",
+        "chalk": "^5.0.1",
         "chroma-js": "^2.4.2",
         "commander": "^9.0.0",
         "configstore": "^6.0.0",

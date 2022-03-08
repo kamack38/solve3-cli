@@ -38,19 +38,19 @@ const authenticate = async (username?: string, password?: string) => {
             .prompt([
                 {
                     type: 'input',
-                    name: 'user_name',
+                    name: 'selectedUsername',
                     message: 'Enter your username',
                     validate: requireLetterOrNumber,
                 },
                 {
                     type: 'password',
                     message: 'Enter your password',
-                    name: 'pass_word',
+                    name: 'selectedPassword',
                     mask: '*',
                     validate: requireLetterOrNumber,
                 },
             ])
-            .then(async ({ user_name, pass_word }) => await login(user_name, pass_word))
+            .then(async ({ selectedUsername, selectedPassword }) => await login(selectedUsername, selectedPassword))
     }
 }
 
