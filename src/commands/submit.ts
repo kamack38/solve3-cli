@@ -3,7 +3,7 @@ import inquirer from 'inquirer'
 import downloadSubmitCode from './download.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printError } from '../utils/messages.js'
-import printTable from '../utils/printTable.js'
+import printTable, { handleSubmitStatus } from '../utils/printTable.js'
 import { pageData, submitDetails } from '../lib/routes.js'
 import { nextPageOption, previousPageOption, quitOption, downloadCodeOption, showSubmitDetailsOption } from '../lib/options.js'
 import contestData from '../types/contestData.js'
@@ -17,7 +17,7 @@ const showSubmits = async (SessionId: string, contestId?: string, page: number =
     const descriptionColumns = ['ID', 'Short Name', 'Status', 'Result', 'Time']
     const dataTemplate = ['id', 'problem_short_name', 'status', 'result', 'time']
     printTable(tableTitle, descriptionColumns, submits, dataTemplate, tableSuffix)
-    const oldChoices = submits.map(({ id }) => id)
+    const oldChoices = submits.map(({ id, status, problem_short_name }) => `${id} - ${handleSubmitStatus(status)} - ${problem_short_name}`)
 
     const additionalOptions = [quitOption]
 
@@ -50,7 +50,7 @@ const showSubmits = async (SessionId: string, contestId?: string, page: number =
                 case quitOption:
                     break
                 default:
-                    showSubmitOptions(SessionId, option)
+                    showSubmitOptions(SessionId, option.split(' -')[0])
                     break
             }
         })
