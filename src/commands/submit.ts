@@ -6,16 +6,18 @@ import { printError } from '../utils/messages.js'
 import printTable from '../utils/printTable.js'
 import { pageData, submitDetails } from '../lib/routes.js'
 import { nextPageOption, previousPageOption, quitOption, downloadCodeOption, showSubmitDetailsOption } from '../lib/options.js'
+import contestData from '../types/contestData.js'
+import testObject from '../types/testObject.js'
 
 const showSubmits = async (SessionId: string, contestId?: string, page: number = 1) => {
-    const { submits, contest, submits_count } = await getSolveData(SessionId, pageData, contestId + '/' + page)
+    const { submits, contest, submits_count }: contestData = await getSolveData(SessionId, pageData, contestId + '/' + page)
     const tableTitle = `Submits: ${chalk.cyanBright(contest.name)}`
     const submitsCount = Number(submits_count)
     const tableSuffix = `Page: ${page}/${Math.ceil(submitsCount / 15)}`
     const descriptionColumns = ['ID', 'Short Name', 'Status', 'Result', 'Time']
     const dataTemplate = ['id', 'problem_short_name', 'status', 'result', 'time']
     printTable(tableTitle, descriptionColumns, submits, dataTemplate, tableSuffix)
-    const choices = submits.map(({ id }) => id)
+    const oldChoices = submits.map(({ id }) => id)
 
     const additionalOptions = [quitOption]
 
@@ -26,7 +28,7 @@ const showSubmits = async (SessionId: string, contestId?: string, page: number =
         additionalOptions.push(previousPageOption)
     }
 
-    choices.push(new inquirer.Separator(), ...additionalOptions, new inquirer.Separator())
+    const choices = [...oldChoices, new inquirer.Separator(), ...additionalOptions, new inquirer.Separator()]
 
     inquirer
         .prompt([
@@ -78,7 +80,7 @@ const showSubmitOptions = (SessionId: string, submitId: string) => {
 }
 
 const showSubmitDetails = async (SessionId: string, submitId: string) => {
-    const { tests, submit } = await getSolveData(SessionId, submitDetails, submitId)
+    const { tests, submit }: testObject = await getSolveData(SessionId, submitDetails, submitId)
     const compilationLog = submit.compilation_log
     const tableTitle = `Tests for ${chalk.cyanBright(submitId)}`
     const descriptionColumns = ['Test', 'Time', 'Memory', 'Status', 'Points', 'Comments']

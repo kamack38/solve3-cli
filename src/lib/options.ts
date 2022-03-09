@@ -3,6 +3,7 @@ import figures from 'figures'
 
 export const problemsOption = '❓ Show problems'
 export const rankingOption = '📊 Show ranking'
+export const afterTimeRankingOption = '⏱️ Show ranking after time'
 export const sendSolutionOption = '📦 Send solution'
 export const descriptionOption = '📄 Show description'
 export const downloadCodeOption = '💾 Download code'

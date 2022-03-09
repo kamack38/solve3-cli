@@ -21,7 +21,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.5.3').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.6.0', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -100,10 +100,20 @@ program
     .command('ranking')
     .alias('rank')
     .description('Show ranking for a contest')
-    .argument('<id>', 'Contest ID')
-    .action((id: string) => {
+    .argument('[id]', 'Contest ID. If shows ranking in the last contest.')
+    .option('-t, --after-time', 'Show after time')
+    .action((id: string, { afterTime }: { afterTime: boolean }) => {
         const SessionId = getSessionId()
-        SessionId ? showRanking(SessionId, id) : null
+        if (SessionId) {
+            if (!id) {
+                id = getLastContest()
+            }
+            if (afterTime) {
+                showRanking(SessionId, id, true)
+            } else {
+                showRanking(SessionId, id)
+            }
+        }
     })
 
 program

@@ -26,7 +26,7 @@ Usage: solve3 [options] [command]
 Awesome Solve3 Cli built using custom API
 
 Options:
-  -V, --version                               output the version number
+  -v, --version                               output the version number
   -h, --help                                  display help for command
 
 Commands:
@@ -36,9 +36,10 @@ Commands:
   contest|cont [options] [id]                 View contest
   send <contestId> [id] [filePath]            Send problem solution
   description|desc <id>                       Show problem description
-  ranking|rank <id>                           Show ranking for a contest
+  ranking|rank [options] [id]                 Show ranking for a contest
   favorite|fav [options]                      Add, delete or show favorite contests
-  submit|sub [options] [id]                   Show recent submits
+  submit|sub [options] [id]                   Show recent contest submits
+  status [options] [query]                    Show recent submits
   task [options] [query]                      Show tasks
   help [command]                              display help for command
 ```
@@ -148,15 +149,16 @@ Options:
 ### ranking
 
 ```
-Usage: solve3 ranking|rank [options] <id>
+Usage: solve3 ranking|rank [options] [id]
 
 Show ranking for a contest
 
 Arguments:
-  id          Contest ID
+  id                Contest ID. If shows ranking in the last contest.
 
 Options:
-  -h, --help  display help for command
+  -t, --after-time  Show after time
+  -h, --help        display help for command
 ```
 
 ### favorite

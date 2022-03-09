@@ -8,6 +8,7 @@ import postSolveData, { createSubmitData } from '../utils/postSolveData.js'
 import { printInfo, printError, printSuccess, printTip } from '../utils/messages.js'
 import { contestSubmit, pageData } from '../lib/routes.js'
 import { sendSolutionOption, descriptionOption, quitOption } from '../lib/options.js'
+import problemObjectType from '../types/problemObject.js'
 
 const send = async (SessionId: string, problemShortName: string, id: string, filePath: string) => {
     const contestSendData = await createSubmitData(SessionId, id, problemShortName, filePath)
@@ -80,14 +81,6 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
                     break
             }
         })
-}
-
-type problemObjectType = {
-    id: string
-    contest_id: string
-    problem_id: string
-    short_name: string
-    name: string
 }
 
 const showProblemInfo = ({ name, id, contest_id, problem_id, short_name }: problemObjectType) => {
