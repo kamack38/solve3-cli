@@ -36,7 +36,6 @@ export const deleteFavoriteContest = (contestId: string) => {
     if (favorites[contestId]) {
         const contestName = favorites[contestId].name
         delete favorites[contestId]
-        console.log(favorites)
         config.set('favorites', favorites)
         console.log(chalk.greenBright(figures.tick), chalk.cyan(contestName), chalk.green('has been'), chalk.red('DELETED'), chalk.green('from your favorites!'))
     } else {
