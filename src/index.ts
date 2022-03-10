@@ -21,7 +21,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.6.2', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.6.3', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -70,9 +70,9 @@ program
         const SessionId = getSessionId()
         if (last) {
             const lastContest = getLastContest()
-            SessionId ? (lastContest ? selectContest(SessionId, lastContest) : null) : null
+            SessionId && lastContest && selectContest(SessionId, lastContest)
         } else {
-            SessionId ? selectContest(SessionId, contestId) : null
+            SessionId && selectContest(SessionId, contestId)
         }
     })
 
@@ -84,7 +84,7 @@ program
     .argument('[filePath]', 'File path')
     .action((contestId: string, id: string, filePath: string) => {
         const SessionId = getSessionId()
-        SessionId ? showProblems(SessionId, contestId, id, filePath) : null
+        SessionId && showProblems(SessionId, contestId, id, filePath)
     })
 
 program

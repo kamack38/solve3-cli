@@ -9,6 +9,8 @@ import { printInfo, printError, printSuccess, printTip } from '../utils/messages
 import { contestSubmit, pageData } from '../lib/routes.js'
 import { sendSolutionOption, descriptionOption, quitOption } from '../lib/options.js'
 import problemObjectType from '../types/problemObject.js'
+import contestData from '../types/contestData.js'
+import { handleSubmitStatus } from '../utils/printTable.js'
 
 const send = async (SessionId: string, problemShortName: string, id: string, filePath: string) => {
     const contestSendData = await createSubmitData(SessionId, id, problemShortName, filePath)
@@ -27,7 +29,8 @@ const send = async (SessionId: string, problemShortName: string, id: string, fil
 }
 
 const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: string) => {
-    const { problems } = await getSolveData(SessionId, pageData, contestId)
+    const { problems, own_results }: contestData = await getSolveData(SessionId, pageData, contestId)
+    const choices = problems.map(({ short_name, name, id }) => `${short_name} - ${handleSubmitStatus(own_results[id].solution_status)} - ${name}`)
     if (problemId) {
         const problemShortName = problems.find(({ id }) => id === problemId).short_name
         printTip(`Short name : ${problemShortName}`)
@@ -46,11 +49,11 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
                     type: 'list',
                     name: 'problem',
                     message: 'Select problem',
-                    choices: problems,
+                    choices: choices,
                 },
             ])
             .then(async ({ problem }) => {
-                const problemObject = problems.find(({ name }) => name === problem)
+                const problemObject = problems.find(({ short_name }) => short_name === problem.split(' ')[0])
                 showProblemInfo(problemObject)
                 await showProblemOptions(SessionId, contestId, problemObject.short_name, problemObject.id)
             })
