@@ -21,7 +21,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('0.6.3', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.0.0', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -63,17 +63,16 @@ program
 program
     .command('contest')
     .alias('cont')
-    .description('View contest')
+    .description('View contest you have access to')
     .argument('[id]', 'Contest ID')
     .option('-l, --last', 'View last contest')
-    .action((contestId: string, { last }: { last: boolean }) => {
+    .option('-a, --all', 'Show all contests')
+    .action((contestId: string, { last, all }: { last: boolean; all: boolean }) => {
         const SessionId = getSessionId()
         if (last) {
-            const lastContest = getLastContest()
-            SessionId && lastContest && selectContest(SessionId, lastContest)
-        } else {
-            SessionId && selectContest(SessionId, contestId)
+            contestId = getLastContest()
         }
+        SessionId && selectContest(SessionId, contestId, !all)
     })
 
 program

@@ -33,7 +33,7 @@ Commands:
   login|auth [options] [username] [password]  Login in to Solve
   logout [options]                            Logout from Solve
   config|conf [option] [value]                Change config option. If value is null prints current value
-  contest|cont [options] [id]                 View contest
+  contest|cont [options] [id]                 View contest you have access to
   send <contestId> [id] [filePath]            Send problem solution
   description|desc <id>                       Show problem description
   ranking|rank [options] [id]                 Show ranking for a contest
@@ -92,12 +92,14 @@ Options:
 ```
 Usage: solve3 contest|cont [options] [id]
 
-View contest
+View contest you have access to
 
 Arguments:
   id          Contest ID
 
 Options:
+  -l, --last  View last contest
+  -a, --all   Show all contests
   -h, --help  display help for command
 ```
 

@@ -5,6 +5,10 @@ export const printInfo = (label: string, value: string) => {
     console.log(chalk.cyan(label), ':', chalk.green(value))
 }
 
+export const printValue = (label: string, value: string) => {
+    console.log(chalk.blue(figures.info), chalk.cyan(label), ':', chalk.green(value))
+}
+
 export const printTip = (message: string) => {
     console.log(chalk.blue(figures.info), chalk.cyan(message))
 }

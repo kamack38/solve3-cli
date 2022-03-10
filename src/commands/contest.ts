@@ -8,7 +8,7 @@ import showSubmits from './submit.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printInfo, printSuccess, printTip } from '../utils/messages.js'
-import { contests, contestData, pageData } from '../lib/routes.js'
+import { contests, contestData as contestDataRoute, pageData } from '../lib/routes.js'
 import { problemsOption, submitsOption, rankingOption, afterTimeRankingOption, favoriteAddOption, favoriteRemoveOption, backOption, quitOption } from '../lib/options.js'
 
 const config = new Configstore('solve3-cli')
@@ -19,11 +19,14 @@ const checkParentId = async (SessionId: string, contestId: string) => {
     }
 }
 
-const selectContest = async (SessionId: string, contestId: string = '0') => {
-    const { records: contestsArr } = await getSolveData(SessionId, contests, contestId)
+const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false) => {
+    let { records: contestsArr } = await getSolveData(SessionId, contests, contestId)
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId)
     } else {
+        if (onlyAvailable) {
+            contestsArr = contestsArr.filter(({ permission }) => permission === '<span class="badge badge-success">Tak</span>')
+        }
         const favorites = config.get('favorites')
         if (isNotEmpty(favorites)) {
             contestsArr.unshift(new inquirer.Separator())
@@ -35,7 +38,7 @@ const selectContest = async (SessionId: string, contestId: string = '0') => {
         let defaultSelect = 0
         if (contestData) {
             contestsArr.unshift(new inquirer.Separator())
-            contestsArr.unshift(figures.triangleUp)
+            contestsArr.unshift(backOption)
             defaultSelect += 1
         }
         defaultSelect += Object.keys(favorites).length
@@ -52,15 +55,15 @@ const selectContest = async (SessionId: string, contestId: string = '0') => {
                 },
             ])
             .then(({ selectedContest }) => {
-                if (figures.triangleUp === selectedContest) {
-                    selectContest(SessionId, contestData.contest.parent)
+                if (selectedContest === backOption) {
+                    selectContest(SessionId, contestData.contest.parent, onlyAvailable)
                 } else if (favorites[selectedContest]) {
                     config.set('lastContest', favorites[selectedContest].id)
-                    selectContest(SessionId, favorites[selectedContest].id)
+                    selectContest(SessionId, favorites[selectedContest].id, onlyAvailable)
                 } else {
                     const contestInfo = contestsArr.find(({ name }) => name === selectedContest.replace(`${figures.star} `, ''))
                     config.set('lastContest', contestInfo.id)
-                    selectContest(SessionId, contestInfo.id)
+                    selectContest(SessionId, contestInfo.id, onlyAvailable)
                 }
             })
     }
@@ -79,7 +82,7 @@ const printTime = (endTime: string) => {
 }
 
 const showContestInfo = async (SessionId: string, contestId?: string) => {
-    const { name, id, parent, short_name, end_time } = await getSolveData(SessionId, contestData, contestId)
+    const { name, id, parent, short_name, end_time } = await getSolveData(SessionId, contestDataRoute, contestId)
     printTip('Contest Info')
     printInfo('Name', name)
     printInfo('ID', id)
