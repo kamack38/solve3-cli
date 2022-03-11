@@ -5,7 +5,7 @@ import { selectFile } from './send.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printError, printInfo, printSuccess, printTip } from '../utils/messages.js'
 import { tasks, taskDescription, taskSubmit } from '../lib/routes.js'
-import { descriptionOption, sendSolutionOption, submitsOption, quitOption, nextPageOption, previousPageOption } from '../lib/options.js'
+import { descriptionOption, sendSolutionOption, submissionsOption, quitOption, nextPageOption, previousPageOption } from '../lib/options.js'
 import postSolveData, { createTaskSubmitData } from '../utils/postSolveData.js'
 import showStatus from './status.js'
 
@@ -62,7 +62,7 @@ export const showTaskInfo = async (SessionId: string, taskId: string, taskName: 
     printInfo('Short name', taskShortName)
     printInfo('Level', taskLevel)
     printInfo('ID', taskId)
-    const choices = [descriptionOption, sendSolutionOption, submitsOption, quitOption]
+    const choices = [descriptionOption, sendSolutionOption, submissionsOption, quitOption]
     inquirer
         .prompt([
             {
@@ -95,7 +95,7 @@ export const showTaskInfo = async (SessionId: string, taskId: string, taskName: 
                             })
                     }
                     break
-                case submitsOption:
+                case submissionsOption:
                     showStatus(SessionId, taskName, 1)
             }
         })

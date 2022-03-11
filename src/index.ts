@@ -10,7 +10,7 @@ import showProblems from './commands/send.js'
 import authenticate from './commands/auth.js'
 import selectContest from './commands/contest.js'
 import showRanking from './commands/ranking.js'
-import showSubmits, { showLatestSubmit } from './commands/submit.js'
+import showSubmissions, { showLatestSubmission } from './commands/submission.js'
 import selectTask from './commands/tasks.js'
 import changeConfig from './commands/config.js'
 import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
@@ -21,7 +21,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.0.0', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.0.1', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -69,14 +69,13 @@ program
     .option('-a, --all', 'Show all contests')
     .action((contestId: string, { last, all }: { last: boolean; all: boolean }) => {
         const SessionId = getSessionId()
-        if (last) {
-            contestId = getLastContest()
-        }
+        last && (contestId = getLastContest())
         SessionId && selectContest(SessionId, contestId, !all)
     })
 
 program
     .command('send')
+    .alias('submit')
     .description('Send problem solution')
     .argument('<contestId>', 'Contest ID')
     .argument('[id]', 'Problem ID')
@@ -103,16 +102,8 @@ program
     .option('-t, --after-time', 'Show after time')
     .action((id: string, { afterTime }: { afterTime: boolean }) => {
         const SessionId = getSessionId()
-        if (SessionId) {
-            if (!id) {
-                id = getLastContest()
-            }
-            if (afterTime) {
-                showRanking(SessionId, id, true)
-            } else {
-                showRanking(SessionId, id)
-            }
-        }
+        !id && (id = getLastContest())
+        SessionId && showRanking(SessionId, id, afterTime)
     })
 
 program
@@ -133,37 +124,29 @@ program
     })
 
 program
-    .command('submit')
+    .command('submission')
     .alias('sub')
-    .description('Show recent contest submits')
+    .description('Show recent contest submissions')
     .argument('[id]', 'Contest ID. If not provided uses last contest ID')
-    .option('-L, --latest', 'Show details of the latest submit in the contest')
+    .option('-L, --latest', 'Show details of the latest submissions in the contest')
     .action((id: string, { latest }: { latest: boolean }) => {
         const SessionId = getSessionId()
         if (SessionId) {
-            if (id) {
-                if (latest) {
-                    showLatestSubmit(SessionId, id)
-                } else {
-                    showSubmits(SessionId, id)
-                }
+            !id && (id = config.get('lastContest'))
+            if (latest) {
+                showLatestSubmission(SessionId, id)
             } else {
-                const lastContest = config.get('lastContest')
-                if (latest) {
-                    showLatestSubmit(SessionId, lastContest)
-                } else {
-                    showSubmits(SessionId, lastContest)
-                }
+                showSubmissions(SessionId, id)
             }
         }
     })
 
 program
     .command('status')
-    .description('Show recent submits')
+    .description('Show recent task submissions')
     .argument('[query]', 'Status query')
-    .option('-p, --page <page>', 'Show submits on specified page')
-    .option('-m, --my', 'Show only my submits')
+    .option('-p, --page <page>', 'Show submissions on specified page')
+    .option('-m, --my', 'Show only my submissions')
     .action((query: string, { page, my }: { page: number; my: boolean }) => {
         const SessionId = getSessionId()
         if (SessionId) {

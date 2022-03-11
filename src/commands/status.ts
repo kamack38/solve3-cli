@@ -24,7 +24,7 @@ type response = {
 
 const showStatus = async (SessionId: string, query: string = '', page: number = 1, myOnly?: boolean) => {
     const { records, total_pages }: response = await getSolveData(SessionId, statuses, '', { page, query, param: myOnly ? true : false })
-    const title = query.length ? `🔍 Search: ${query}` : 'Recent submits'
+    const title = query.length ? `🔍 Search: ${query}` : 'Recent submissions'
     const descriptionColumns = ['ID', 'Author', 'Test', 'Task', 'Status', 'Time', 'Memory', 'Result', 'Date']
     const dataTemplate = ['id', 'author', 'test', 'task', 'status', 'time_used', 'mem_used', 'result', 'time']
     printTable(title, descriptionColumns, records, dataTemplate, `Page: ${page}/${total_pages}`)

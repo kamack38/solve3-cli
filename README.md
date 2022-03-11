@@ -34,12 +34,12 @@ Commands:
   logout [options]                            Logout from Solve
   config|conf [option] [value]                Change config option. If value is null prints current value
   contest|cont [options] [id]                 View contest you have access to
-  send <contestId> [id] [filePath]            Send problem solution
+  send|submit <contestId> [id] [filePath]     Send problem solution
   description|desc <id>                       Show problem description
   ranking|rank [options] [id]                 Show ranking for a contest
   favorite|fav [options]                      Add, delete or show favorite contests
-  submit|sub [options] [id]                   Show recent contest submits
-  status [options] [query]                    Show recent submits
+  submission|sub [options] [id]               Show recent contest submissions
+  status [options] [query]                    Show recent task submissions
   task [options] [query]                      Show tasks
   help [command]                              display help for command
 ```
@@ -121,7 +121,7 @@ Options:
 ### send
 
 ```
-Usage: solve3 send [options] <contestId> [id] [filePath]
+Usage: solve3 send|submit [options] <contestId> [id] [filePath]
 
 Send problem solution
 
@@ -176,18 +176,18 @@ Options:
   -h, --help                display help for command
 ```
 
-### submit
+### submission
 
 ```
-Usage: solve3 submit|sub [options] [id]
+Usage: solve3 submission|sub [options] [id]
 
-Show recent contest submits
+Show recent contest submissions
 
 Arguments:
   id            Contest ID. If not provided uses last contest ID
 
 Options:
-  -L, --latest  Show details of the latest submit in the contest
+  -L, --latest  Show details of the latest submissions in the contest
   -h, --help    display help for command
 ```
 
@@ -196,14 +196,14 @@ Options:
 ```
 Usage: solve3 status [options] [query]
 
-Show recent submits
+Show recent task submissions
 
 Arguments:
   query              Status query
 
 Options:
-  -p, --page <page>  Show submits on specified page
-  -m, --my           Show only my submits
+  -p, --page <page>  Show submissions on specified page
+  -m, --my           Show only my submissions
   -h, --help         display help for command
 ```
 

@@ -4,12 +4,12 @@ import figures from 'figures'
 import inquirer from 'inquirer'
 import showProblems from './send.js'
 import showRanking from './ranking.js'
-import showSubmits from './submit.js'
+import showSubmissions from './submission.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printInfo, printSuccess, printTip } from '../utils/messages.js'
 import { contests, contestData as contestDataRoute, pageData } from '../lib/routes.js'
-import { problemsOption, submitsOption, rankingOption, afterTimeRankingOption, favoriteAddOption, favoriteRemoveOption, backOption, quitOption } from '../lib/options.js'
+import { problemsOption, submissionsOption, rankingOption, afterTimeRankingOption, favoriteAddOption, favoriteRemoveOption, backOption, quitOption } from '../lib/options.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -92,7 +92,7 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
 
     const favorites = config.get('favorites')
     const favoriteOption = favorites[contestId] ? favoriteRemoveOption : favoriteAddOption
-    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submitsOption, favoriteOption, quitOption]
+    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, favoriteOption, quitOption]
     inquirer
         .prompt([
             {
@@ -117,8 +117,8 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                 case afterTimeRankingOption:
                     showRanking(SessionId, id, true)
                     break
-                case submitsOption:
-                    showSubmits(SessionId, id)
+                case submissionsOption:
+                    showSubmissions(SessionId, id)
                     break
                 case favoriteOption:
                     if (favoriteOption === favoriteAddOption) {
