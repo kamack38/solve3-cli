@@ -9,7 +9,7 @@ import isNotEmpty from '../utils/isNotEmpty.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printInfo, printSuccess, printTip } from '../utils/messages.js'
 import { contests, contestData as contestDataRoute, pageData } from '../lib/routes.js'
-import { problemsOption, submissionsOption, rankingOption, afterTimeRankingOption, favoriteAddOption, favoriteRemoveOption, backOption, quitOption } from '../lib/options.js'
+import { problemsOption, submissionsOption, rankingOption, afterTimeRankingOption, favouriteAddOption, favouriteRemoveOption, backOption, quitOption } from '../lib/options.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -27,11 +27,11 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
         if (onlyAvailable) {
             contestsArr = contestsArr.filter(({ permission }) => permission === '<span class="badge badge-success">Tak</span>')
         }
-        const favorites = config.get('favorites')
-        if (isNotEmpty(favorites)) {
+        const favourites = config.get('favourites')
+        if (isNotEmpty(favourites)) {
             contestsArr.unshift(new inquirer.Separator())
-            for (const key in favorites) {
-                contestsArr.unshift({ name: `${chalk.yellow(figures.star)} ` + favorites[key].name, id: favorites[key].id })
+            for (const key in favourites) {
+                contestsArr.unshift({ name: `${chalk.yellow(figures.star)} ` + favourites[key].name, id: favourites[key].id })
             }
         }
         const contestData = await checkParentId(SessionId, contestId)
@@ -41,7 +41,7 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
             contestsArr.unshift(backOption)
             defaultSelect += 1
         }
-        defaultSelect += Object.keys(favorites).length
+        defaultSelect += Object.keys(favourites).length
         inquirer
             .prompt([
                 {
@@ -57,9 +57,9 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
             .then(({ selectedContest }) => {
                 if (selectedContest === backOption) {
                     selectContest(SessionId, contestData.contest.parent, onlyAvailable)
-                } else if (favorites[selectedContest]) {
-                    config.set('lastContest', favorites[selectedContest].id)
-                    selectContest(SessionId, favorites[selectedContest].id, onlyAvailable)
+                } else if (favourites[selectedContest]) {
+                    config.set('lastContest', favourites[selectedContest].id)
+                    selectContest(SessionId, favourites[selectedContest].id, onlyAvailable)
                 } else {
                     const contestInfo = contestsArr.find(({ name }) => name === selectedContest.replace(`${figures.star} `, ''))
                     config.set('lastContest', contestInfo.id)
@@ -90,9 +90,9 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
     printInfo('Short name', short_name)
     printInfo('Time left', printTime(end_time))
 
-    const favorites = config.get('favorites')
-    const favoriteOption = favorites[contestId] ? favoriteRemoveOption : favoriteAddOption
-    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, favoriteOption, quitOption]
+    const favourites = config.get('favourites')
+    const favouriteOption = favourites[contestId] ? favouriteRemoveOption : favouriteAddOption
+    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, favouriteOption, quitOption]
     inquirer
         .prompt([
             {
@@ -120,15 +120,15 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                 case submissionsOption:
                     showSubmissions(SessionId, id)
                     break
-                case favoriteOption:
-                    if (favoriteOption === favoriteAddOption) {
-                        favorites[contestId] = { name: name, id: contestId }
-                        config.set('favorites', favorites)
+                case favouriteOption:
+                    if (favouriteOption === favouriteAddOption) {
+                        favourites[contestId] = { name: name, id: contestId }
+                        config.set('favourites', favourites)
                     } else {
-                        delete favorites[contestId]
-                        config.set('favorites', favorites)
+                        delete favourites[contestId]
+                        config.set('favourites', favourites)
                     }
-                    printSuccess('Favorites has been updated!')
+                    printSuccess('Favourites has been updated!')
             }
         })
 }

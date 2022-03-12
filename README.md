@@ -37,7 +37,7 @@ Commands:
   send|submit <contestId> [id] [filePath]     Send problem solution
   description|desc <id>                       Show problem description
   ranking|rank [options] [id]                 Show ranking for a contest
-  favorite|fav [options]                      Add, delete or show favorite contests
+  favourite|fav [options]                     Add, delete or show favourite contests
   submission|sub [options] [id]               Show recent contest submissions
   status [options] [query]                    Show recent task submissions
   task [options] [query]                      Show tasks
@@ -163,16 +163,16 @@ Options:
   -h, --help        display help for command
 ```
 
-### favorite
+### favourite
 
 ```
-Usage: solve3 favorite|fav [options]
+Usage: solve3 favourite|fav [options]
 
-Add, delete or show favorite contests
+Add, delete or show favourite contests
 
 Options:
-  -a, --add <contestId>     Add contest to favorites
-  -d, --delete <contestId>  Delete contest from favorite contests
+  -a, --add <contestId>     Add contest to favourite
+  -d, --delete <contestId>  Delete contest from favourite contests
   -h, --help                display help for command
 ```
 

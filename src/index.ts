@@ -13,15 +13,16 @@ import showRanking from './commands/ranking.js'
 import showSubmissions, { showLatestSubmission } from './commands/submission.js'
 import selectTask from './commands/tasks.js'
 import changeConfig from './commands/config.js'
-import { showFavoriteContests, addFavoriteContest, deleteFavoriteContest } from './commands/favorite.js'
+import { showFavouriteContests, addFavouriteContest, deleteFavouriteContest } from './commands/favourite.js'
 import showProblemDescription from './commands/description.js'
 import showStatus from './commands/status.js'
+import { printSuccess } from './utils/messages.js'
 
-const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', lastTask: '', favorites: {} })
+const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', lastTask: '', favourites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.0.1', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.0.2', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -48,6 +49,7 @@ program
             config.set('password', '')
         }
         config.set('authCookie', '')
+        printSuccess('You have been successfully logged out')
     })
 
 program
@@ -107,19 +109,19 @@ program
     })
 
 program
-    .command('favorite')
+    .command('favourite')
     .alias('fav')
-    .description('Add, delete or show favorite contests')
-    .option('-a, --add <contestId>', 'Add contest to favorites')
-    .option('-d, --delete <contestId>', 'Delete contest from favorite contests')
+    .description('Add, delete or show favourite contests')
+    .option('-a, --add <contestId>', 'Add contest to favourite')
+    .option('-d, --delete <contestId>', 'Delete contest from favourite contests')
     .action((options: { add: string; delete: string }) => {
         const SessionId = getSessionId()
         if (options.add) {
-            addFavoriteContest(SessionId, options.add)
+            addFavouriteContest(SessionId, options.add)
         } else if (options.delete) {
-            deleteFavoriteContest(options.delete)
+            deleteFavouriteContest(options.delete)
         } else {
-            showFavoriteContests()
+            showFavouriteContests()
         }
     })
 
