@@ -15,6 +15,9 @@ const login = async (username: string, password: string) => {
     return axios
         .post('https://solve.edu.pl/users/login', formData, { headers: formData.getHeaders() })
         .then((res) => {
+            if (!res.data.includes('Panel użytkownika')) {
+                throw new Error('You had given wrong username or password')
+            }
             const cookie = res.headers['set-cookie'][0].replace(/\;.*/, '').replace(/.*\=/, '')
             printSuccess('Successfully logged in')
             return cookie

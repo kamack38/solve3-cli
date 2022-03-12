@@ -16,13 +16,14 @@ import changeConfig from './commands/config.js'
 import { showFavouriteContests, addFavouriteContest, deleteFavouriteContest } from './commands/favourite.js'
 import showProblemDescription from './commands/description.js'
 import showStatus from './commands/status.js'
+import logout from './commands/logout.js'
 import { printSuccess } from './utils/messages.js'
 
 const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', lastTask: '', favourites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.0.2', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.1.0', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -43,13 +44,13 @@ program
     .command('logout')
     .description('Logout from Solve')
     .option('-r, --remove', 'Remove login data saved in config')
-    .action(({ remove }: { remove: boolean }) => {
+    .action(async ({ remove }: { remove: boolean }) => {
         if (remove) {
             config.set('username', '')
             config.set('password', '')
         }
-        config.set('authCookie', '')
-        printSuccess('You have been successfully logged out')
+        const SessionId = getSessionId()
+        SessionId && (await logout(SessionId)) && config.set('authCookie', '')
     })
 
 program
