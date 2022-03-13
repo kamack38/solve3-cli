@@ -136,6 +136,8 @@ Options:
 
 ### description
 
+> Note that this command **requires java to be installed**
+
 ```
 Usage: solve3 description|desc [options] <id>
 
