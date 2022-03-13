@@ -12,12 +12,11 @@ import problemObjectType from '../types/problemObject.js'
 import contestData from '../types/contestData.js'
 import { handleSubmitStatus } from '../utils/printTable.js'
 
-const send = async (SessionId: string, problemShortName: string, id: string, filePath: string) => {
-    const contestSendData = await createSubmitData(SessionId, id, problemShortName, filePath)
-    postSolveData(SessionId, contestSubmit + id, contestSendData)
+export const send = async (SessionId: string, route: string, sendData: any, resUrl: string) => {
+    postSolveData(SessionId, route, sendData)
         .then((res) => {
             const responseUrl = res.request.res.responseUrl
-            if (responseUrl === `https://solve.edu.pl/contests/view/${id}`) {
+            if (responseUrl === resUrl) {
                 printSuccess('File has been successfully sent!')
             } else {
                 printError('Error while sending the file')
@@ -28,21 +27,32 @@ const send = async (SessionId: string, problemShortName: string, id: string, fil
         })
 }
 
+const sendContestSolution = async (SessionId: string, problemShortName: string, id: string, filePath: string) => {
+    const contestSendData = await createSubmitData(SessionId, id, problemShortName, filePath)
+    const resUrl = `https://solve.edu.pl/contests/view/${id}`
+    send(SessionId, contestSubmit + id, contestSendData, resUrl)
+}
+
 const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: string) => {
     const { problems, own_results }: contestData = await getSolveData(SessionId, pageData, contestId)
-    const choices = problems.map(({ short_name, name, id }) => `${short_name} - ${handleSubmitStatus(own_results[id].solution_status)} - ${name}`)
     if (problemId) {
-        const problemShortName = problems.find(({ id }) => id === problemId).short_name
-        printTip(`Short name : ${problemShortName}`)
-        if (filePath) {
-            send(SessionId, problemShortName, contestId, filePath)
+        let problemShortName = ''
+        if (Number(problemId)) {
+            problemShortName = problems.find(({ id }) => id === problemId).short_name
         } else {
-            const filePath = await selectFile()
-            if (filePath) {
-                send(SessionId, problemShortName, contestId, filePath)
-            }
+            problemShortName = problems.find(({ short_name }) => short_name.toLowerCase() === problemId.toLowerCase()).short_name
         }
+        if (!problemShortName) {
+            printError('No problems found')
+            return null
+        }
+        printTip(`Short name : ${problemShortName}`)
+        if (!filePath) {
+            filePath = await selectFile()
+        }
+        sendContestSolution(SessionId, problemShortName, contestId, filePath)
     } else {
+        const choices = problems.map(({ short_name, name, id }) => `${short_name} - ${handleSubmitStatus(own_results[id].solution_status)} - ${name}`)
         await inquirer
             .prompt([
                 {
@@ -120,6 +130,7 @@ export const selectFile = async (ext?: string) => {
             } else {
                 printError("You can't select a directory")
                 printTip('Press <tab> to expand the directory and select a valid file')
+                process.exit(1)
             }
         })
 }

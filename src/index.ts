@@ -17,13 +17,12 @@ import { showFavouriteContests, addFavouriteContest, deleteFavouriteContest } fr
 import showProblemDescription from './commands/description.js'
 import showStatus from './commands/status.js'
 import logout from './commands/logout.js'
-import { printSuccess } from './utils/messages.js'
 
 const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', lastTask: '', favourites: {} })
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.1.0', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.2.0', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -81,7 +80,7 @@ program
     .alias('submit')
     .description('Send problem solution')
     .argument('<contestId>', 'Contest ID')
-    .argument('[id]', 'Problem ID')
+    .argument('[id]', 'Problem ID or Problem short name')
     .argument('[filePath]', 'File path')
     .action((contestId: string, id: string, filePath: string) => {
         const SessionId = getSessionId()

@@ -3,11 +3,12 @@ import inquirer from 'inquirer'
 import showProblemDescription from './description.js'
 import { selectFile } from './send.js'
 import getSolveData from '../utils/getSolveData.js'
-import { printError, printInfo, printSuccess, printTip } from '../utils/messages.js'
+import { printInfo, printTip } from '../utils/messages.js'
 import { tasks, taskDescription, taskSubmit } from '../lib/routes.js'
 import { descriptionOption, sendSolutionOption, submissionsOption, quitOption, nextPageOption, previousPageOption } from '../lib/options.js'
-import postSolveData, { createTaskSubmitData } from '../utils/postSolveData.js'
+import { createTaskSubmitData } from '../utils/postSolveData.js'
 import showStatus from './status.js'
+import { send } from './send.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -55,6 +56,12 @@ const selectTask = async (SessionId: string, page: number = 1, query: string = '
         })
 }
 
+const sendTaskSolution = async (SessionId: string, taskId: string, filePath: string) => {
+    const taskSendData = await createTaskSubmitData(SessionId, taskId, filePath)
+    const resUrl = 'https://solve.edu.pl/status'
+    send(SessionId, taskSubmit + taskId, taskSendData, resUrl)
+}
+
 export const showTaskInfo = async (SessionId: string, taskId: string, taskName: string, taskShortName: string, taskLevel: string) => {
     config.set('lastTask', taskId)
     printTip('Contest Info')
@@ -81,18 +88,7 @@ export const showTaskInfo = async (SessionId: string, taskId: string, taskName: 
                 case sendSolutionOption:
                     const filePath = await selectFile()
                     if (filePath) {
-                        postSolveData(SessionId, taskSubmit + taskId, await createTaskSubmitData(SessionId, taskId, filePath))
-                            .then((res) => {
-                                const responseUrl = res.request.res.responseUrl
-                                if (responseUrl === 'https://solve.edu.pl/status') {
-                                    printSuccess('File has been successfully sent!')
-                                } else {
-                                    printError('Error while sending the file')
-                                }
-                            })
-                            .catch((error) => {
-                                printError(error)
-                            })
+                        sendTaskSolution(SessionId, taskId, filePath)
                     }
                     break
                 case submissionsOption:
