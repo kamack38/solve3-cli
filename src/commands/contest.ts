@@ -8,8 +8,20 @@ import showSubmissions from './submission.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printInfo, printSuccess, printTip } from '../utils/messages.js'
+import handlePagination from '../utils/handlePagination.js'
 import { contests, contestData as contestDataRoute, pageData } from '../lib/routes.js'
-import { problemsOption, submissionsOption, rankingOption, afterTimeRankingOption, favouriteAddOption, favouriteRemoveOption, backOption, quitOption } from '../lib/options.js'
+import {
+    problemsOption,
+    submissionsOption,
+    rankingOption,
+    afterTimeRankingOption,
+    favouriteAddOption,
+    favouriteRemoveOption,
+    backOption,
+    quitOption,
+    nextPageOption,
+    previousPageOption,
+} from '../lib/options.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -19,8 +31,8 @@ const checkParentId = async (SessionId: string, contestId: string) => {
     }
 }
 
-const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false) => {
-    let { records: contestsArr } = await getSolveData(SessionId, contests, contestId)
+const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false, page: number = 1) => {
+    let { records: contestsArr, total_pages } = await getSolveData(SessionId, contests, contestId, { page })
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId)
     } else {
@@ -37,10 +49,10 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
         const contestData = await checkParentId(SessionId, contestId)
         let defaultSelect = 0
         if (contestData) {
-            contestsArr.unshift(new inquirer.Separator())
-            contestsArr.unshift(backOption)
+            contestsArr.unshift(backOption, new inquirer.Separator())
             defaultSelect += 1
         }
+        contestsArr.push(...handlePagination(page, total_pages - 1))
         defaultSelect += Object.keys(favourites).length
         inquirer
             .prompt([
@@ -49,21 +61,32 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
                     message: 'Select contest',
                     name: 'selectedContest',
                     choices: contestsArr,
-                    loop: false,
+                    loop: true,
                     pageSize: 14,
                     default: defaultSelect,
                 },
             ])
             .then(({ selectedContest }) => {
-                if (selectedContest === backOption) {
-                    selectContest(SessionId, contestData.contest.parent, onlyAvailable)
-                } else if (favourites[selectedContest]) {
-                    config.set('lastContest', favourites[selectedContest].id)
-                    selectContest(SessionId, favourites[selectedContest].id, onlyAvailable)
-                } else {
-                    const contestInfo = contestsArr.find(({ name }) => name === selectedContest.replace(`${figures.star} `, ''))
-                    config.set('lastContest', contestInfo.id)
-                    selectContest(SessionId, contestInfo.id, onlyAvailable)
+                switch (true) {
+                    case selectedContest === nextPageOption:
+                        selectContest(SessionId, contestId, onlyAvailable, page + 1)
+                        break
+                    case selectedContest === previousPageOption:
+                        selectContest(SessionId, contestId, onlyAvailable, page - 1)
+                        break
+                    case selectedContest === backOption:
+                        selectContest(SessionId, contestData.contest.parent, onlyAvailable)
+                        break
+                    case selectedContest === quitOption:
+                        break
+                    case favourites[selectedContest]:
+                        config.set('lastContest', favourites[selectedContest].id)
+                        selectContest(SessionId, favourites[selectedContest].id, onlyAvailable)
+                        break
+                    default:
+                        const contestInfo = contestsArr.find(({ name }) => name === selectedContest.replace(`${figures.star} `, ''))
+                        config.set('lastContest', contestInfo.id)
+                        selectContest(SessionId, contestInfo.id, onlyAvailable)
                 }
             })
     }

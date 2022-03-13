@@ -37,10 +37,10 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
     const { problems, own_results }: contestData = await getSolveData(SessionId, pageData, contestId)
     if (problemId) {
         let problemShortName = ''
-        if (Number(problemId)) {
-            problemShortName = problems.find(({ id }) => id === problemId).short_name
-        } else {
+        if (isNaN(Number(problemId))) {
             problemShortName = problems.find(({ short_name }) => short_name.toLowerCase() === problemId.toLowerCase()).short_name
+        } else {
+            problemShortName = problems.find(({ id }) => id === problemId).short_name
         }
         if (!problemShortName) {
             printError('No problems found')

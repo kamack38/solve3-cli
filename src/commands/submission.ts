@@ -4,6 +4,7 @@ import downloadSubmitCode from './download.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printError } from '../utils/messages.js'
 import printTable, { handleSubmitStatus } from '../utils/printTable.js'
+import handlePagination from '../utils/handlePagination.js'
 import { pageData, submitDetails } from '../lib/routes.js'
 import { nextPageOption, previousPageOption, quitOption, downloadCodeOption, showSubmissionDetailsOption } from '../lib/options.js'
 import contestData from '../types/contestData.js'
@@ -19,16 +20,7 @@ const showSubmissions = async (SessionId: string, contestId?: string, page: numb
     printTable(tableTitle, descriptionColumns, submits, dataTemplate, tableSuffix)
     const oldChoices = submits.map(({ id, status, problem_short_name }) => `${id} - ${handleSubmitStatus(status)} - ${problem_short_name}`)
 
-    const additionalOptions = [quitOption]
-
-    if (submitsCount - page * 15 > 0) {
-        additionalOptions.push(nextPageOption)
-    }
-    if (page !== 1) {
-        additionalOptions.push(previousPageOption)
-    }
-
-    const choices = [...oldChoices, new inquirer.Separator(), ...additionalOptions, new inquirer.Separator()]
+    const choices = [...oldChoices, ...handlePagination(page, Math.ceil(submitsCount / 15))]
 
     inquirer
         .prompt([

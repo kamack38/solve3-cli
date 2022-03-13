@@ -1,8 +1,9 @@
+import inquirer from 'inquirer'
 import getSolveData from '../utils/getSolveData.js'
 import printTable from '../utils/printTable.js'
+import handlePagination from '../utils/handlePagination.js'
 import { statuses } from '../lib/routes.js'
-import { nextPageOption, previousPageOption, quitOption } from '../lib/options.js'
-import inquirer from 'inquirer'
+import { nextPageOption, previousPageOption } from '../lib/options.js'
 
 type status = {
     id: string
@@ -32,9 +33,7 @@ const showStatus = async (SessionId: string, query: string = '', page: number = 
 }
 
 const selectPage = (SessionId: string, query: string = '', page: number, totalPages: number, myOnly: boolean = false) => {
-    const choices = [quitOption]
-    if (page > 1) choices.push(previousPageOption)
-    if (page < totalPages) choices.push(nextPageOption)
+    const choices = [...handlePagination(page, totalPages)]
     inquirer
         .prompt([
             {

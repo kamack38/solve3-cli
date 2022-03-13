@@ -2,31 +2,21 @@ import Configstore from 'configstore'
 import inquirer from 'inquirer'
 import showProblemDescription from './description.js'
 import { selectFile } from './send.js'
+import showStatus from './status.js'
+import { send } from './send.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printInfo, printTip } from '../utils/messages.js'
 import { tasks, taskDescription, taskSubmit } from '../lib/routes.js'
 import { descriptionOption, sendSolutionOption, submissionsOption, quitOption, nextPageOption, previousPageOption } from '../lib/options.js'
 import { createTaskSubmitData } from '../utils/postSolveData.js'
-import showStatus from './status.js'
-import { send } from './send.js'
+import handlePagination from '../utils/handlePagination.js'
 
 const config = new Configstore('solve3-cli')
 
 const selectTask = async (SessionId: string, page: number = 1, query: string = '') => {
     const { records, total_pages } = await getSolveData(SessionId, tasks, '', { page, query })
     const choices = [...records]
-    const additionalOptions = [quitOption]
-    let defaultOption = 1
-
-    if (total_pages - page > 1) {
-        additionalOptions.push(nextPageOption)
-        defaultOption++
-    }
-    if (page > 1) {
-        additionalOptions.push(previousPageOption)
-        defaultOption++
-    }
-    choices.unshift(new inquirer.Separator(), ...additionalOptions, new inquirer.Separator())
+    choices.push(...handlePagination(page, total_pages - 1))
     inquirer
         .prompt([
             {
@@ -34,9 +24,8 @@ const selectTask = async (SessionId: string, page: number = 1, query: string = '
                 message: 'Select option',
                 name: 'option',
                 choices: choices,
-                loop: false,
+                loop: true,
                 pageSize: 14,
-                default: defaultOption,
             },
         ])
         .then(({ option }) => {
