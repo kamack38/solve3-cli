@@ -86,7 +86,7 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
                 case sendSolutionOption:
                     const filePath = await selectFile()
                     if (filePath) {
-                        send(SessionId, problemShortName, contestId, filePath)
+                        sendContestSolution(SessionId, problemShortName, contestId, filePath)
                     }
                     break
                 case descriptionOption:
