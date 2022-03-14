@@ -5,7 +5,7 @@ import { extname } from 'node:path'
 import showProblemDescription from './description.js'
 import getSolveData from '../utils/getSolveData.js'
 import postSolveData, { createSubmitData } from '../utils/postSolveData.js'
-import { printInfo, printError, printSuccess, printTip } from '../utils/messages.js'
+import { printInfo, printError, printSuccess, printTip, printValue } from '../utils/messages.js'
 import { contestSubmit, pageData } from '../lib/routes.js'
 import { sendSolutionOption, descriptionOption, quitOption } from '../lib/options.js'
 import problemObjectType from '../types/problemObject.js'
@@ -37,16 +37,18 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
     const { problems, own_results }: contestData = await getSolveData(SessionId, pageData, contestId)
     if (problemId) {
         let problemShortName = ''
+        let problemName = ''
         if (isNaN(Number(problemId))) {
-            problemShortName = problems.find(({ short_name }) => short_name.toLowerCase() === problemId.toLowerCase()).short_name
+            ;({ short_name: problemShortName, name: problemName } = problems.find(({ short_name }) => short_name.toLowerCase() === problemId.toLowerCase()))
         } else {
-            problemShortName = problems.find(({ id }) => id === problemId).short_name
+            ;({ short_name: problemShortName, name: problemName } = problems.find(({ id }) => id === problemId))
         }
         if (!problemShortName) {
             printError('No problems found')
             return null
         }
-        printTip(`Short name : ${problemShortName}`)
+        printValue('Name', problemName)
+        printValue('Short name', problemShortName)
         if (!filePath) {
             filePath = await selectFile()
         }

@@ -22,7 +22,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.3.1', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.0', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -80,11 +80,14 @@ program
     .command('send')
     .alias('submit')
     .description('Send problem solution')
-    .argument('<contestId>', 'Contest ID')
+    .argument('<contestId>', 'Contest ID. If equal to `last` or `l` selects last contest')
     .argument('[id]', 'Problem ID or Problem short name')
     .argument('[filePath]', 'File path')
     .action((contestId: string, id: string, filePath: string) => {
         const SessionId = getSessionId()
+        if (contestId === 'last' || contestId === 'l') {
+            contestId = getLastContest()
+        }
         SessionId && showProblems(SessionId, contestId, id, filePath)
     })
 
