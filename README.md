@@ -90,16 +90,16 @@ Options:
 ### contest
 
 ```
-Usage: solve3 contest|cont [options] [id]
+Usage: solve3 send|submit [options] <contestId> [id] [filePath]
 
-View contest you have access to
+Send problem solution
 
 Arguments:
-  id          Contest ID
+  contestId   Contest ID. If equal to `last` or `l` selects last contest
+  id          Problem ID or Problem short name
+  filePath    File path
 
 Options:
-  -l, --last  View last contest
-  -a, --all   Show all contests
   -h, --help  display help for command
 ```
 
