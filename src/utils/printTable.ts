@@ -15,7 +15,7 @@ export const handleSubmitStatus = (status: string) => {
         case '<span class="badge badge-inverse">Błąd kompilacji</span>':
             return chalk.bgBlackBright.whiteBright(' CE ')
         case '<span class="badge badge-info">Błąd wykonania</span>':
-            return chalk.bgMagenta.whiteBright(' RE ')
+            return chalk.bgHex('#9954bb').whiteBright(' RE ')
         case '<span class="badge">?</span>':
             return chalk.bgYellow.blackBright(' ? ')
         case '':
