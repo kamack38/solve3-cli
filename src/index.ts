@@ -6,6 +6,7 @@ import chalk from 'chalk'
 import figures from 'figures'
 import getSessionId from './utils/getSessionId.js'
 import getLastContest from './utils/getLastContest.js'
+import toInt from './utils/toInt.js'
 import showProblems from './commands/send.js'
 import authenticate from './commands/auth.js'
 import selectContest from './commands/contest.js'
@@ -22,7 +23,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.2', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.3', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -70,10 +71,10 @@ program
     .option('-l, --last', 'View last contest')
     .option('-a, --all', 'Show all contests')
     .option('-p, --page <number>', 'Show contests on page')
-    .action((contestId: string, { last, all, page = 1 }: { last: boolean; all: boolean; page: number }) => {
+    .action((contestId: string, { last, all, page = '1' }: { last: boolean; all: boolean; page: string }) => {
         const SessionId = getSessionId()
         last && (contestId = getLastContest())
-        SessionId && selectContest(SessionId, contestId, !all, page)
+        SessionId && selectContest(SessionId, contestId, !all, toInt(page))
     })
 
 program
@@ -153,11 +154,9 @@ program
     .argument('[query]', 'Status query')
     .option('-p, --page <page>', 'Show submissions on specified page')
     .option('-m, --my', 'Show only my submissions')
-    .action((query: string, { page, my }: { page: number; my: boolean }) => {
+    .action((query: string, { page, my }: { page: string; my: boolean }) => {
         const SessionId = getSessionId()
-        if (SessionId) {
-            showStatus(SessionId, query, page, my)
-        }
+        SessionId && showStatus(SessionId, query, toInt(page), my)
     })
 
 program
@@ -165,15 +164,9 @@ program
     .description('Show tasks')
     .argument('[query]', 'Query to search tasks. If not provided shows all tasks')
     .option('-p, --page <page>', 'Show tasks on the specified page')
-    .action((query: string, { page }: { page: number }) => {
+    .action((query: string = '', { page }: { page: string }) => {
         const SessionId = getSessionId()
-        if (SessionId) {
-            if (query) {
-                selectTask(SessionId, page, query)
-            } else {
-                selectTask(SessionId, page)
-            }
-        }
+        SessionId && selectTask(SessionId, toInt(page), query)
     })
 
 program.configureOutput({
