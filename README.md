@@ -18,6 +18,12 @@ Installation requires [Node.js](https://nodejs.org/)
 npm install -g solve3-cli
 ```
 
+## Installation without node
+
+Download prebuilt binaries for your OS from [GitHub Releases](https://github.com/kamack38/solve3-cli/releases)
+
+> Note that showing problem description requires [OpenJDK](https://openjdk.java.net/) (Recommended) / [Java](https://www.java.com/) regardless of which installation option you chose.
+
 ## Usage
 
 ```shell

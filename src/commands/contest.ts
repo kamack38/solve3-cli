@@ -124,6 +124,7 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                 name: 'option',
                 choices: choices,
                 loop: true,
+                default: 1,
             },
         ])
         .then(({ option }) => {
