@@ -74,7 +74,7 @@ program
     .action((contestId: string, { last, all, page = '1' }: { last: boolean; all: boolean; page: string }) => {
         const SessionId = getSessionId()
         last && (contestId = getLastContest())
-        SessionId && selectContest(SessionId, contestId, !all, page ? toInt(page) : undefined)
+        SessionId && selectContest(SessionId, contestId, !all, toInt(page))
     })
 
 program
@@ -156,7 +156,7 @@ program
     .option('-m, --my', 'Show only my submissions')
     .action((query: string, { page, my }: { page: string; my: boolean }) => {
         const SessionId = getSessionId()
-        SessionId && showStatus(SessionId, query, page ? toInt(page) : undefined, my)
+        SessionId && showStatus(SessionId, query, toInt(page), my)
     })
 
 program
@@ -166,7 +166,7 @@ program
     .option('-p, --page <page>', 'Show tasks on the specified page')
     .action((query: string = '', { page }: { page: string }) => {
         const SessionId = getSessionId()
-        SessionId && selectTask(SessionId, page ? toInt(page) : undefined, query)
+        SessionId && selectTask(SessionId, toInt(page), query)
     })
 
 program.configureOutput({
