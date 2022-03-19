@@ -5,7 +5,7 @@ import getCSRFToken from '../utils/getCSRFToken.js'
 import { printError } from '../utils/messages.js'
 import { taskSubmit, contestPage } from '../lib/routes.js'
 
-const postSolveData = async (SessionId: string, route: string, data: any) => {
+const postSolveData = async (SessionId: string, route: string, data: FormData) => {
     return await axios
         .post(
             route,
