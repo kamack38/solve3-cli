@@ -93,7 +93,7 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
 }
 
 const printTime = (endTime: string) => {
-    const timeDiff = Math.floor(new Date(endTime).getTime() / 1000) - Math.floor(new Date().getTime() / 1000)
+    const timeDiff = Math.floor((new Date(endTime).getTime() - new Date().getTime()) / 1000 + new Date().getTimezoneOffset() * 60)
     switch (true) {
         case timeDiff < 0:
             return 'Contest ended'
