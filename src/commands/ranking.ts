@@ -4,6 +4,7 @@ import { table } from 'table'
 import getSolveData from '../utils/getSolveData.js'
 import { pageData } from '../lib/routes.js'
 import rankingObject from '../types/rankingObject.js'
+import { printError } from '../utils/messages.js'
 
 const setResultColor = (result: number, maxValue: number = 100) => {
     const f = chroma.scale(['red', 'yellow', 'orange', 'LimeGreen'])
@@ -14,6 +15,10 @@ const showRanking = async (SessionId: string, id: string, afterTime: boolean = f
     const { ranking, contest }: { ranking: rankingObject[]; contest: { name: string } } = await getSolveData(SessionId, pageData, id + '/' + 1 + '/', {
         want_after: afterTime,
     })
+    if (!ranking.length) {
+        printError('Ranking is not available!')
+        return
+    }
     const contestName = contest.name
 
     const tableData = ranking.map(({ name, rank_result, rank_details }: rankingObject) => {

@@ -3,21 +3,26 @@ import { table } from 'table'
 import { printError } from '../utils/messages.js'
 
 export const handleSubmitStatus = (status: string) => {
+    let pref = ''
+    if (status.split('Przykład: ').length > 1) {
+        status = status.split('Przykład: ')[1]
+        pref = 'E: '
+    }
     switch (status) {
         case '<span class="badge badge-success">OK</span>':
-            return chalk.bgGreen.whiteBright(' OK ')
+            return chalk.bgGreen.whiteBright(` ${pref}OK `)
         case '<span class="badge badge-important">Błędna odpowiedź</span>':
-            return chalk.bgRed.whiteBright(' WA ')
+            return chalk.bgRed.whiteBright(` ${pref}WA `)
         case '<span class="badge badge-warning">Limit czasu przekroczony</span>':
-            return chalk.bgHex('#ff7518').whiteBright(' TLE ')
+            return chalk.bgHex('#ff7518').whiteBright(` ${pref}TLE `)
         case '<span class="badge badge-inverse">Naruszenie bezpieczeństwa</span>':
-            return chalk.bgBlack.whiteBright(' RV ')
+            return chalk.bgBlack.whiteBright(` ${pref}RV `)
         case '<span class="badge badge-inverse">Błąd kompilacji</span>':
-            return chalk.bgBlackBright.whiteBright(' CE ')
+            return chalk.bgBlackBright.whiteBright(` ${pref}CE `)
         case '<span class="badge badge-info">Błąd wykonania</span>':
-            return chalk.bgHex('#9954bb').whiteBright(' RE ')
+            return chalk.bgHex('#9954bb').whiteBright(` ${pref}RE `)
         case '<span class="badge">?</span>':
-            return chalk.bgYellow.blackBright(' ? ')
+            return chalk.bgYellow.blackBright(` ${pref}? `)
         case '':
             return ''
     }
