@@ -23,7 +23,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.7', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.8', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -154,7 +154,7 @@ program
     .argument('[query]', 'Status query')
     .option('-p, --page <page>', 'Show submissions on specified page')
     .option('-m, --my', 'Show only my submissions')
-    .action((query: string, { page, my }: { page: string; my: boolean }) => {
+    .action((query: string, { page = '1', my }: { page: string; my: boolean }) => {
         const SessionId = getSessionId()
         SessionId && showStatus(SessionId, query, toInt(page), my)
     })
@@ -164,7 +164,7 @@ program
     .description('Show tasks')
     .argument('[query]', 'Query to search tasks. If not provided shows all tasks')
     .option('-p, --page <page>', 'Show tasks on the specified page')
-    .action((query: string = '', { page }: { page: string }) => {
+    .action((query: string = '', { page = '1' }: { page: string }) => {
         const SessionId = getSessionId()
         SessionId && selectTask(SessionId, toInt(page), query)
     })
