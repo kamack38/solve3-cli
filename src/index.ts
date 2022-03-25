@@ -12,6 +12,7 @@ import authenticate from './commands/auth.js'
 import selectContest from './commands/contest.js'
 import showRanking from './commands/ranking.js'
 import showSubmissions, { showLatestSubmission } from './commands/submission.js'
+import showQuestions from './commands/question.js'
 import selectTask from './commands/tasks.js'
 import changeConfig from './commands/config.js'
 import { showFavouriteContests, addFavouriteContest, deleteFavouriteContest } from './commands/favourite.js'
@@ -23,7 +24,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.9', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.5.0', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -104,10 +105,21 @@ program
     })
 
 program
+    .command('question')
+    .alias('que')
+    .description('Show problem questions')
+    .argument('[id]', 'Contest ID. If none shows questions in the last contest.')
+    .action((id: string) => {
+        const SessionId = getSessionId()
+        !id && (id = getLastContest())
+        showQuestions(SessionId, id)
+    })
+
+program
     .command('ranking')
     .alias('rank')
     .description('Show ranking for a contest')
-    .argument('[id]', 'Contest ID. If shows ranking in the last contest.')
+    .argument('[id]', 'Contest ID. If none shows ranking in the last contest.')
     .option('-t, --after-time', 'Show after time')
     .action((id: string, { afterTime }: { afterTime: boolean }) => {
         const SessionId = getSessionId()

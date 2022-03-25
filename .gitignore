@@ -4,3 +4,5 @@ bin
 dist
 package
 *.cpp
+TODO.md
+changelog.md

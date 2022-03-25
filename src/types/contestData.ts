@@ -3,9 +3,11 @@ import rankingObject from './rankingObject.js'
 import submitObject from './submitObject.js'
 import ownResults from './ownResults.js'
 import problemObject from './problemObject.js'
+import questionObject from './questionObject.js'
 
 type contestData = {
     contest: contestObject
+    questions: questionObject[]
     problems: problemObject[]
     submits: submitObject[]
     submits_count: string

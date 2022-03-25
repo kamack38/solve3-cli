@@ -21,7 +21,9 @@ import {
     quitOption,
     nextPageOption,
     previousPageOption,
+    showQuestionsOption,
 } from '../lib/options.js'
+import showQuestions from './question.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -115,7 +117,7 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
 
     const favourites = config.get('favourites')
     const favouriteOption = favourites[contestId] ? favouriteRemoveOption : favouriteAddOption
-    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, favouriteOption, quitOption]
+    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, showQuestionsOption, favouriteOption, quitOption]
     inquirer
         .prompt([
             {
@@ -124,6 +126,7 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                 name: 'option',
                 choices: choices,
                 loop: true,
+                pageSize: 8,
                 default: 1,
             },
         ])
@@ -143,6 +146,9 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                     break
                 case submissionsOption:
                     showSubmissions(SessionId, id)
+                    break
+                case showQuestionsOption:
+                    showQuestions(SessionId, id)
                     break
                 case favouriteOption:
                     if (favouriteOption === favouriteAddOption) {

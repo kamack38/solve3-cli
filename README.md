@@ -42,6 +42,7 @@ Commands:
   contest|cont [options] [id]                 View contest you have access to
   send|submit <contestId> [id] [filePath]     Send problem solution
   description|desc <id>                       Show problem description
+  question|que [id]                           Show problem questions
   ranking|rank [options] [id]                 Show ranking for a contest
   favourite|fav [options]                     Add, delete or show favourite contests
   submission|sub [options] [id]               Show recent contest submissions
@@ -151,6 +152,20 @@ Show problem description
 
 Arguments:
   id          Problem ID
+
+Options:
+  -h, --help  display help for command
+```
+
+### question
+
+```
+Usage: solve3 question|que [options] [id]
+
+Show problem questions
+
+Arguments:
+  id          Contest ID. If none shows questions in the last contest.
 
 Options:
   -h, --help  display help for command
