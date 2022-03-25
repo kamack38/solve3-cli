@@ -31,7 +31,7 @@ const checkParentId = async (SessionId: string, contestId: string) => {
     }
 }
 
-const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false, page: number = 1) => {
+const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false, page: number = 1, liv: boolean = false) => {
     let { records: contestsArr, total_pages } = await getSolveData(SessionId, contests, contestId, { page })
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId)

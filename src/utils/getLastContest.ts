@@ -4,7 +4,7 @@ import { printError } from '../utils/messages.js'
 const config = new Configstore('solve3-cli')
 
 const getLastContest = () => {
-    const lastContest = config.get('lastContest')
+    const lastContest: string = config.get('lastContest')
     if (!lastContest) {
         printError('Last contest was not found!')
         return undefined

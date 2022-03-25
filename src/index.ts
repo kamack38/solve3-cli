@@ -23,7 +23,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.8', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.4.9', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -71,15 +71,17 @@ program
     .option('-l, --last', 'View last contest')
     .option('-a, --all', 'Show all contests')
     .option('-p, --page <number>', 'Show contests on page')
-    .action((contestId: string, { last, all, page = '1' }: { last: boolean; all: boolean; page: string }) => {
+    .option('--live', 'Enable live mode')
+    .action((contestId: string, { last, all, page = '1', live }: { last: boolean; all: boolean; page: string; live: boolean }) => {
         const SessionId = getSessionId()
         last && (contestId = getLastContest())
-        SessionId && selectContest(SessionId, contestId, !all, toInt(page))
+        SessionId && selectContest(SessionId, contestId, !all, toInt(page), live)
     })
 
 program
     .command('send')
     .alias('submit')
+    .alias('problems')
     .description('Send problem solution')
     .argument('<contestId>', 'Contest ID. If equal to `last` or `l` selects last contest')
     .argument('[id]', 'Problem ID or Problem short name')
