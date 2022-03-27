@@ -22,8 +22,9 @@ import {
     nextPageOption,
     previousPageOption,
     showQuestionsOption,
+    askQuestionOption,
 } from '../lib/options.js'
-import showQuestions from './question.js'
+import showQuestions, { askQuestion } from './question.js'
 import contestsArray from '../types/contestsObject.js'
 import contestDataType from '../types/contestData.js'
 
@@ -121,7 +122,7 @@ const showContestInfo = async (SessionId: string, contestId: string, onlyAvailab
 
     const favourites = config.get('favourites')
     const favouriteOption = favourites[contestId] ? favouriteRemoveOption : favouriteAddOption
-    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, showQuestionsOption, favouriteOption, quitOption]
+    const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, showQuestionsOption, askQuestionOption, favouriteOption, quitOption]
     inquirer
         .prompt([
             {
@@ -130,7 +131,7 @@ const showContestInfo = async (SessionId: string, contestId: string, onlyAvailab
                 name: 'option',
                 choices: choices,
                 loop: true,
-                pageSize: 8,
+                pageSize: 9,
                 default: 1,
             },
         ])
@@ -156,6 +157,8 @@ const showContestInfo = async (SessionId: string, contestId: string, onlyAvailab
                 case showQuestionsOption:
                     await showQuestions(SessionId, id)
                     break
+                case askQuestionOption:
+                    await askQuestion(SessionId, id)
                 case favouriteOption:
                     if (favouriteOption === favouriteAddOption) {
                         favourites[contestId] = { name: name, id: contestId }

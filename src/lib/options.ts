@@ -9,6 +9,7 @@ export const descriptionOption = '📄 Show description'
 export const downloadCodeOption = '💾 Download code'
 export const showSubmissionDetailsOption = '📄 Show submission details'
 export const showQuestionsOption = '🤔 Show questions'
+export const askQuestionOption = '❔ Ask question'
 export const submissionsOption = `${chalk.green(figures.nodejs)} Show submissions`
 export const favouriteAddOption = `${chalk.yellow(figures.star)} Add to favourites`
 export const favouriteRemoveOption = `${chalk.red(figures.star)} Remove from favourites`
