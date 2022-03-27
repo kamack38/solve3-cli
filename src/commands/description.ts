@@ -5,7 +5,7 @@ import { contestDescription } from '../lib/routes.js'
 import { printError } from '../utils/messages.js'
 
 const showProblemDescription = async (problemId: string, route: string = contestDescription) => {
-    pdf2html.text(`https://solve.edu.pl/${route}${problemId}`, (err, pdfText: string) => {
+    return await pdf2html.text(`https://solve.edu.pl/${route}${problemId}`, (err, pdfText: string) => {
         if (err) {
             printError('Conversion error: ' + err)
         } else {
@@ -15,8 +15,8 @@ const showProblemDescription = async (problemId: string, route: string = contest
                     .replace(/Zadanie/, chalk.cyan('Zadanie'))
                     .replace(/Limit pamięci/gi, chalk.cyan('Limit pamięci'))
                     .replace(/Limit czasu/gi, chalk.cyan('Limit czasu'))
-                    .replace(/Wejście/gi, chalk.cyanBright('Wejście'))
-                    .replace(/Wyjście/gi, chalk.cyanBright('Wyjście'))
+                    .replace(/Wejście\n/gi, chalk.cyanBright('Wejście\n'))
+                    .replace(/Wyjście\n/gi, chalk.cyanBright('Wyjście\n'))
                     .replace(/OGRANICZENIA/gi, chalk.cyan('Ograniczenia'))
                     .replace(/PRZYKŁAD/i, chalk.cyan('Przykłady'))
                     .replace(/ą/gi, 'ą')

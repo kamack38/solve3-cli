@@ -8,9 +8,10 @@ import postSolveData, { createSubmitData } from '../utils/postSolveData.js'
 import { printInfo, printError, printSuccess, printTip, printValue } from '../utils/messages.js'
 import { contestSubmit, pageData } from '../lib/routes.js'
 import { sendSolutionOption, descriptionOption, quitOption } from '../lib/options.js'
+import { handleSubmitStatus } from '../utils/printTable.js'
 import problemObjectType from '../types/problemObject.js'
 import contestData from '../types/contestData.js'
-import { handleSubmitStatus } from '../utils/printTable.js'
+import ArrayElement from '../types/ArrayElement.js'
 
 export const send = async (SessionId: string, route: string, sendData: any, resUrl: string) => {
     postSolveData(SessionId, route, sendData)
@@ -54,7 +55,19 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
         }
         sendContestSolution(SessionId, problemShortName, contestId, filePath)
     } else {
-        const choices = problems.map(({ short_name, name, id }) => `${short_name} - ${handleSubmitStatus(own_results[id].solution_status)} - ${name}`)
+        const choices = problems.map(({ short_name, name, id, contest_id, problem_id, multiplier }) => {
+            return {
+                name: `${short_name} - ${handleSubmitStatus(own_results[id].solution_status)} - ${name}`,
+                value: {
+                    name,
+                    id,
+                    contest_id,
+                    problem_id,
+                    short_name,
+                    multiplier,
+                },
+            }
+        })
         await inquirer
             .prompt([
                 {
@@ -64,10 +77,9 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
                     choices: choices,
                 },
             ])
-            .then(async ({ problem }) => {
-                const problemObject = problems.find(({ short_name }) => short_name === problem.split(' ')[0])
-                showProblemInfo(problemObject)
-                await showProblemOptions(SessionId, contestId, problemObject.short_name, problemObject.id)
+            .then(async ({ problem }: { problem: ArrayElement<typeof choices>['value'] }) => {
+                showProblemInfo(problem)
+                await showProblemOptions(SessionId, contestId, problem.short_name, problem.id)
             })
     }
 }
@@ -88,7 +100,7 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
                 case sendSolutionOption:
                     const filePath = await selectFile()
                     if (filePath) {
-                        sendContestSolution(SessionId, problemShortName, contestId, filePath)
+                        await sendContestSolution(SessionId, problemShortName, contestId, filePath)
                     }
                     break
                 case descriptionOption:

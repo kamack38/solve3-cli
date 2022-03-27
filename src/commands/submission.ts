@@ -18,7 +18,9 @@ const showSubmissions = async (SessionId: string, contestId?: string, page: numb
     const descriptionColumns = ['ID', 'Short Name', 'Status', 'Result', 'Time']
     const dataTemplate = ['id', 'problem_short_name', 'status', 'result', 'time']
     printTable(tableTitle, descriptionColumns, submits, dataTemplate, tableSuffix)
-    const oldChoices = submits.map(({ id, status, problem_short_name }) => `${id} - ${handleSubmitStatus(status)} - ${problem_short_name}`)
+    const oldChoices = submits.map(({ id, status, problem_short_name }) => {
+        return { name: `${id} - ${handleSubmitStatus(status)} - ${problem_short_name}`, value: id }
+    })
 
     const choices = [...oldChoices, ...handlePagination(page, Math.ceil(submitsCount / 15))]
 
@@ -40,7 +42,7 @@ const showSubmissions = async (SessionId: string, contestId?: string, page: numb
                 case quitOption:
                     return
                 default:
-                    return await showSubmissionOptions(SessionId, option.split(' -')[0])
+                    return await showSubmissionOptions(SessionId, option)
             }
         })
 }

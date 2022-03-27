@@ -32,7 +32,7 @@ const config = new Configstore('solve3-cli')
 const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false, page: number = 1, live: boolean = false) => {
     const res: contestsArray = await getSolveData(SessionId, contests, contestId, { page })
     if (!res) {
-        printError('Contests are NOT available!')
+        printError('This is NOT available!')
         return
     }
 
@@ -80,24 +80,20 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
         .then(async ({ selectedContest }: { selectedContest: string }) => {
             switch (true) {
                 case selectedContest === nextPageOption:
-                    selectContest(SessionId, contestId, onlyAvailable, page + 1)
+                    selectContest(SessionId, contestId, onlyAvailable, page + 1, live)
                     break
                 case selectedContest === previousPageOption:
-                    selectContest(SessionId, contestId, onlyAvailable, page - 1)
+                    selectContest(SessionId, contestId, onlyAvailable, page - 1, live)
                     break
                 case selectedContest === backOption:
                     const contestData: contestDataType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
-                    selectContest(SessionId, contestData.contest.parent, onlyAvailable)
+                    selectContest(SessionId, contestData.contest.parent, onlyAvailable, 1, live)
                     break
                 case selectedContest === quitOption:
                     break
-                case favourites[selectedContest] !== undefined:
-                    config.set('lastContest', selectedContest)
-                    selectContest(SessionId, selectedContest, onlyAvailable)
-                    break
                 default:
                     config.set('lastContest', selectedContest)
-                    selectContest(SessionId, selectedContest, onlyAvailable)
+                    selectContest(SessionId, selectedContest, onlyAvailable, 1, live)
             }
         })
 }
