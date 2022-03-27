@@ -22,7 +22,7 @@ const showSubmissions = async (SessionId: string, contestId?: string, page: numb
 
     const choices = [...oldChoices, ...handlePagination(page, Math.ceil(submitsCount / 15))]
 
-    inquirer
+    await inquirer
         .prompt([
             {
                 type: 'list',
@@ -31,26 +31,23 @@ const showSubmissions = async (SessionId: string, contestId?: string, page: numb
                 choices: choices,
             },
         ])
-        .then(({ option }) => {
+        .then(async ({ option }) => {
             switch (option) {
                 case nextPageOption:
-                    showSubmissions(SessionId, contestId, page + 1)
-                    break
+                    return await showSubmissions(SessionId, contestId, page + 1)
                 case previousPageOption:
-                    showSubmissions(SessionId, contestId, page - 1)
-                    break
+                    return await showSubmissions(SessionId, contestId, page - 1)
                 case quitOption:
-                    break
+                    return
                 default:
-                    showSubmissionOptions(SessionId, option.split(' -')[0])
-                    break
+                    return await showSubmissionOptions(SessionId, option.split(' -')[0])
             }
         })
 }
 
-const showSubmissionOptions = (SessionId: string, submitId: string) => {
+const showSubmissionOptions = async (SessionId: string, submitId: string) => {
     const choices = [showSubmissionDetailsOption, downloadCodeOption]
-    inquirer
+    await inquirer
         .prompt([
             {
                 type: 'list',
@@ -59,14 +56,12 @@ const showSubmissionOptions = (SessionId: string, submitId: string) => {
                 choices: choices,
             },
         ])
-        .then(({ option }) => {
+        .then(async ({ option }) => {
             switch (option) {
                 case downloadCodeOption:
-                    downloadSubmitCode(SessionId, submitId)
-                    break
+                    return await downloadSubmitCode(SessionId, submitId)
                 case showSubmissionDetailsOption:
-                    showSubmissionDetails(SessionId, submitId)
-                    break
+                    return await showSubmissionDetails(SessionId, submitId)
             }
         })
 }

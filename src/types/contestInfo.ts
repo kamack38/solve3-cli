@@ -1,4 +1,4 @@
-type contestObject = {
+type contestInfo = {
     id: string
     parent: string
     short_name: string
@@ -30,4 +30,4 @@ type contestObject = {
     _permission: any
 }
 
-export default contestObject
+export default contestInfo

@@ -24,7 +24,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.5.0', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.6.0', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -108,7 +108,7 @@ program
     .command('question')
     .alias('que')
     .description('Show problem questions')
-    .argument('[id]', 'Contest ID. If none shows questions in the last contest.')
+    .argument('[contestId]', 'Contest ID. If none shows questions in the last contest.')
     .action((id: string) => {
         const SessionId = getSessionId()
         !id && (id = getLastContest())

@@ -97,17 +97,19 @@ Options:
 ### contest
 
 ```
-Usage: solve3 send|submit [options] <contestId> [id] [filePath]
+Usage: solve3 contest|cont [options] [id]
 
-Send problem solution
+View contest you have access to
 
 Arguments:
-  contestId   Contest ID. If equal to `last` or `l` selects last contest
-  id          Problem ID or Problem short name
-  filePath    File path
+  id                   Contest ID
 
 Options:
-  -h, --help  display help for command
+  -l, --last           View last contest
+  -a, --all            Show all contests
+  -p, --page <number>  Show contests on page
+  --live               Enable live mode
+  -h, --help           display help for command
 ```
 
 ### task

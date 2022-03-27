@@ -7,7 +7,7 @@ import showRanking from './ranking.js'
 import showSubmissions from './submission.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 import getSolveData from '../utils/getSolveData.js'
-import { printInfo, printSuccess, printTip } from '../utils/messages.js'
+import { printError, printInfo, printSuccess, printTip } from '../utils/messages.js'
 import handlePagination from '../utils/handlePagination.js'
 import { contests, contestData as contestDataRoute, pageData } from '../lib/routes.js'
 import {
@@ -24,74 +24,82 @@ import {
     showQuestionsOption,
 } from '../lib/options.js'
 import showQuestions from './question.js'
+import contestsArray from '../types/contestsObject.js'
+import contestDataType from '../types/contestData.js'
 
 const config = new Configstore('solve3-cli')
 
-const checkParentId = async (SessionId: string, contestId: string) => {
-    if (contestId !== '0' && contestId !== undefined) {
-        return await getSolveData(SessionId, pageData, contestId + '/' + 1)
+const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false, page: number = 1, live: boolean = false) => {
+    const res: contestsArray = await getSolveData(SessionId, contests, contestId, { page })
+    if (!res) {
+        printError('Contests are NOT available!')
+        return
     }
-}
 
-const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false, page: number = 1, liv: boolean = false) => {
-    let { records: contestsArr, total_pages } = await getSolveData(SessionId, contests, contestId, { page })
+    let { records: contestsArr, total_pages } = res
     if (!contestsArr.length) {
-        showContestInfo(SessionId, contestId)
-    } else {
-        if (onlyAvailable) {
-            contestsArr = contestsArr.filter(({ permission }) => permission === '<span class="badge badge-success">Tak</span>')
-        }
-        const favourites = config.get('favourites')
-        if (isNotEmpty(favourites)) {
-            contestsArr.unshift(new inquirer.Separator())
-            for (const key in favourites) {
-                contestsArr.unshift({ name: `${chalk.yellow(figures.star)} ` + favourites[key].name, id: favourites[key].id })
-            }
-        }
-        const contestData = await checkParentId(SessionId, contestId)
-        let defaultSelect = 0
-        if (contestData) {
-            contestsArr.unshift(backOption, new inquirer.Separator())
-            defaultSelect += 1
-        }
-        contestsArr.push(...handlePagination(page, total_pages - 1))
-        defaultSelect += Object.keys(favourites).length
-        inquirer
-            .prompt([
-                {
-                    type: 'list',
-                    message: 'Select contest',
-                    name: 'selectedContest',
-                    choices: contestsArr,
-                    loop: true,
-                    pageSize: 14,
-                    default: defaultSelect,
-                },
-            ])
-            .then(({ selectedContest }) => {
-                switch (true) {
-                    case selectedContest === nextPageOption:
-                        selectContest(SessionId, contestId, onlyAvailable, page + 1)
-                        break
-                    case selectedContest === previousPageOption:
-                        selectContest(SessionId, contestId, onlyAvailable, page - 1)
-                        break
-                    case selectedContest === backOption:
-                        selectContest(SessionId, contestData.contest.parent, onlyAvailable)
-                        break
-                    case selectedContest === quitOption:
-                        break
-                    case favourites[selectedContest]:
-                        config.set('lastContest', favourites[selectedContest].id)
-                        selectContest(SessionId, favourites[selectedContest].id, onlyAvailable)
-                        break
-                    default:
-                        const contestInfo = contestsArr.find(({ name }) => name === selectedContest.replace(`${figures.star} `, ''))
-                        config.set('lastContest', contestInfo.id)
-                        selectContest(SessionId, contestInfo.id, onlyAvailable)
-                }
-            })
+        showContestInfo(SessionId, contestId, onlyAvailable, live)
+        return
     }
+
+    if (onlyAvailable) {
+        contestsArr = contestsArr.filter(({ permission }) => permission === '<span class="badge badge-success">Tak</span>')
+    }
+
+    const favourites = config.get('favourites')
+    const choices: any[] = contestsArr.map(({ name, id }) => {
+        return { name, value: id }
+    })
+
+    if (isNotEmpty(favourites)) {
+        choices.unshift(new inquirer.Separator())
+        for (const key in favourites) {
+            choices.unshift({ name: `${chalk.yellow(figures.star)} ` + favourites[key].name, value: favourites[key].id })
+        }
+    }
+
+    let defaultSelect = 0
+    if (contestId !== '0' && contestId !== undefined) {
+        choices.unshift(backOption, new inquirer.Separator())
+        defaultSelect += 1
+    }
+    choices.push(...handlePagination(page, total_pages - 1))
+    defaultSelect += Object.keys(favourites).length
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                message: 'Select contest',
+                name: 'selectedContest',
+                choices: choices,
+                loop: true,
+                pageSize: 14,
+                default: defaultSelect,
+            },
+        ])
+        .then(async ({ selectedContest }: { selectedContest: string }) => {
+            switch (true) {
+                case selectedContest === nextPageOption:
+                    selectContest(SessionId, contestId, onlyAvailable, page + 1)
+                    break
+                case selectedContest === previousPageOption:
+                    selectContest(SessionId, contestId, onlyAvailable, page - 1)
+                    break
+                case selectedContest === backOption:
+                    const contestData: contestDataType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
+                    selectContest(SessionId, contestData.contest.parent, onlyAvailable)
+                    break
+                case selectedContest === quitOption:
+                    break
+                case favourites[selectedContest] !== undefined:
+                    config.set('lastContest', selectedContest)
+                    selectContest(SessionId, selectedContest, onlyAvailable)
+                    break
+                default:
+                    config.set('lastContest', selectedContest)
+                    selectContest(SessionId, selectedContest, onlyAvailable)
+            }
+        })
 }
 
 const printTime = (endTime: string) => {
@@ -106,7 +114,7 @@ const printTime = (endTime: string) => {
     }
 }
 
-const showContestInfo = async (SessionId: string, contestId?: string) => {
+const showContestInfo = async (SessionId: string, contestId: string, onlyAvailable: boolean, live: boolean) => {
     const { name, id, parent, short_name, end_time } = await getSolveData(SessionId, contestDataRoute, contestId)
     printTip('Contest Info')
     printInfo('Name', name)
@@ -130,25 +138,27 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                 default: 1,
             },
         ])
-        .then(({ option }) => {
+        .then(async ({ option }) => {
             switch (option) {
+                case quitOption:
+                    return
                 case backOption:
-                    selectContest(SessionId, parent)
-                    break
+                    selectContest(SessionId, parent, onlyAvailable, 1, live)
+                    return
                 case problemsOption:
-                    showProblems(SessionId, id)
+                    await showProblems(SessionId, id)
                     break
                 case rankingOption:
-                    showRanking(SessionId, id)
+                    await showRanking(SessionId, id)
                     break
                 case afterTimeRankingOption:
-                    showRanking(SessionId, id, true)
+                    await showRanking(SessionId, id, true)
                     break
                 case submissionsOption:
-                    showSubmissions(SessionId, id)
+                    await showSubmissions(SessionId, id)
                     break
                 case showQuestionsOption:
-                    showQuestions(SessionId, id)
+                    await showQuestions(SessionId, id)
                     break
                 case favouriteOption:
                     if (favouriteOption === favouriteAddOption) {
@@ -159,6 +169,9 @@ const showContestInfo = async (SessionId: string, contestId?: string) => {
                         config.set('favourites', favourites)
                     }
                     printSuccess('Favourites has been updated!')
+            }
+            if (live) {
+                showContestInfo(SessionId, contestId, onlyAvailable, live)
             }
         })
 }

@@ -4,6 +4,7 @@ import { table } from 'table'
 import getSolveData from '../utils/getSolveData.js'
 import { pageData } from '../lib/routes.js'
 import rankingObject from '../types/rankingObject.js'
+import contestData from '../types/contestData.js'
 import { printError } from '../utils/messages.js'
 
 const setResultColor = (result: number, maxValue: number = 100) => {
@@ -12,13 +13,15 @@ const setResultColor = (result: number, maxValue: number = 100) => {
 }
 
 const showRanking = async (SessionId: string, id: string, afterTime: boolean = false) => {
-    const { ranking, contest }: { ranking: rankingObject[]; contest: { name: string } } = await getSolveData(SessionId, pageData, id + '/' + 1 + '/', {
+    const res: contestData = await getSolveData(SessionId, pageData, id + '/' + 1 + '/', {
         want_after: afterTime,
     })
-    if (!ranking.length) {
-        printError('Ranking is not available!')
+
+    if (!res || !res.ranking.length) {
+        printError('Ranking is NOT available!')
         return
     }
+    const { ranking, contest } = res
     const contestName = contest.name
 
     const tableData = ranking.map(({ name, rank_result, rank_details }: rankingObject) => {
