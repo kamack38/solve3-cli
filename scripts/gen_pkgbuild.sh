@@ -1,7 +1,7 @@
 #!/bin/bash -
 
 (
-  cat <<'EOF'
+	cat <<'EOF'
 # Maintainer: Kamack38 <kamack38.biznes@gmail.com>
 pkgname=solve3-cli
 pkgver=SCLI_PKGVER
@@ -14,7 +14,7 @@ depends=('nodejs' 'jre-openjdk-headless')
 makedepends=('npm' 'jq')
 source=("https://registry.npmjs.org/$pkgname/-/$pkgname-$pkgver.tgz")
 noextract=("$pkgname-$pkgver.tgz")
-md5sums=('SKIP')
+sha256sums=('SKIP')
 
 package() {
 	npm install -g --prefix "$pkgdir/usr" "$srcdir/$pkgname-$pkgver.tgz"
@@ -37,4 +37,4 @@ package() {
 	done
 }
 EOF
-) | sed 's/pkgver=SCLI_PKGVER/pkgver='$(printf "$(git describe --abbrev=0)" | sed 's/v//')'/'
+) | sed 's/pkgver=SCLI_PKGVER/pkgver='$(printf "$(git describe --abbrev=0 | sed 's/v//')")'/' | sed "s/sha256sums=('SKIP')/sha256sums=('$(curl -s "https://registry.npmjs.org/solve3-cli/-/solve3-cli-'$(printf "$(git describe --abbrev=0 | sed 's/v//')")'.tgz" | sha256sum | head -c 64)')/"
