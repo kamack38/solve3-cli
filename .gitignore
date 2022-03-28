@@ -6,3 +6,4 @@ package
 *.cpp
 TODO.md
 changelog.md
+*.tgz
