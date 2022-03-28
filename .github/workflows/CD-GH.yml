@@ -1,4 +1,4 @@
-name: 🚀 Publish Node.js Package to GitHub
+name: 🚀 Publish to GitHub Packages
 
 on:
   release:

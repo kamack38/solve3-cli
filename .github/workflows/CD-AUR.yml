@@ -1,4 +1,4 @@
-name: 🚀 Publish Node.js Package to AUR
+name: 🚀 Publish to AUR
 
 on:
   release:
