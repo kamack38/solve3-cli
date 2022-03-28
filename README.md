@@ -24,6 +24,14 @@ Download prebuilt binaries for your OS from [GitHub Releases](https://github.com
 
 > Note that showing problem description requires [OpenJDK](https://openjdk.java.net/) (Recommended) / [Java](https://www.java.com/) regardless of which installation option you chose.
 
+### Arch Linux
+
+You can install `solve3-cli` from [AUR](https://aur.archlinux.org/packages/solve3-cli)
+
+```
+yay -S solve3-cli
+```
+
 ## Usage
 
 ```shell
