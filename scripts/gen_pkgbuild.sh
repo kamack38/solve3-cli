@@ -1,6 +1,10 @@
+#!/bin/bash -
+
+(
+  cat <<'EOF'
 # Maintainer: Kamack38 <kamack38.biznes@gmail.com>
 pkgname=solve3-cli
-pkgver=1.7.2
+pkgver=SCLI_PKGVER
 pkgrel=1
 pkgdesc="CLI for solving problems at https://solve.edu.pl/"
 arch=('any')
@@ -32,3 +36,5 @@ package() {
 		chmod 644 "$pkgjson"
 	done
 }
+EOF
+) | sed 's/pkgver=SCLI_PKGVER/pkgver='$(printf "$(git describe --abbrev=0)" | sed 's/v//')'/'
