@@ -24,7 +24,7 @@ npm install -g solve3-cli
 
 You can install `solve3-cli` from [AUR](https://aur.archlinux.org/packages/solve3-cli)
 
-```
+```shell
 yay -S solve3-cli
 ```
 
@@ -32,7 +32,7 @@ yay -S solve3-cli
 
 You can install `solve3-cli` using [Homebrew](https://brew.sh)
 
-```
+```shell
 brew tap kamack38/solve3-cli
 brew install solve3-cli
 ```
