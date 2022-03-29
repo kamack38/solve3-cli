@@ -12,17 +12,13 @@ Command-line tool for interacting with [Solve3](https://solve.edu.pl/)
 
 ## Installation
 
+### Standard Installation
+
 Installation requires [Node.js](https://nodejs.org/)
 
 ```shell
 npm install -g solve3-cli
 ```
-
-## Installation without node
-
-Download prebuilt binaries for your OS from [GitHub Releases](https://github.com/kamack38/solve3-cli/releases)
-
-> Note that showing problem description requires [OpenJDK](https://openjdk.java.net/) (Recommended) / [Java](https://www.java.com/) regardless of which installation option you chose.
 
 ### Arch Linux
 
@@ -31,6 +27,21 @@ You can install `solve3-cli` from [AUR](https://aur.archlinux.org/packages/solve
 ```
 yay -S solve3-cli
 ```
+
+### MacOS
+
+You can install `solve3-cli` using [Homebrew](https://brew.sh)
+
+```
+brew tap kamack38/solve3-cli
+brew install solve3-cli
+```
+
+## Installation without node
+
+Download prebuilt binaries for your OS from [GitHub Releases](https://github.com/kamack38/solve3-cli/releases)
+
+> Note that showing problem description requires [OpenJDK](https://openjdk.java.net/) (Recommended) / [Java](https://www.java.com/) regardless of which installation option you chose.
 
 ## Usage
 
