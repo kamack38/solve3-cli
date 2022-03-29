@@ -1,12 +1,12 @@
-name: 🚀 Publish to npm
+name: 🚀 Publish package
 
 on:
   release:
-    types: [created]
+    types: [published]
   workflow_dispatch:
 
 jobs:
-  publish-package:
+  publish-npm:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -27,3 +27,52 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  publish-aur:
+    needs: publish-npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📚 Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: 🔧 Generate PKGBUILD
+        run: |
+          mkdir -p ./tmp
+          bash scripts/gen_pkgbuild.sh > ./tmp/PKGBUILD
+          cat ./tmp/PKGBUILD
+      - name: 🚀 Publish AUR package
+        uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
+        with:
+          pkgname: solve3-cli
+          pkgbuild: ./tmp/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Update AUR package
+  publish-gpr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: 📚 Checkout
+        uses: actions/checkout@v2
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://npm.pkg.github.com/
+      - name: ✏️ Change name
+        uses: deef0000dragon1/json-edit-action/@v1
+        env:
+          KEY: name
+          VALUE: '@kamack38/solve3-cli'
+          FILE: package.json
+      - name: 📦 Install dependencies
+        run: npm i
+      - name: 🔧 Build package
+        run: npm run build
+      - name: 🚀 Publish to GitHub Packages
+        run: npm publish --registry https://npm.pkg.github.com/
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GH_PAT}}
