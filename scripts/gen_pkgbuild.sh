@@ -37,4 +37,4 @@ package() {
 	done
 }
 EOF
-) | sed 's/pkgver=SCLI_PKGVER/pkgver='$(printf "$(git describe --abbrev=0 | sed 's/v//')")'/' | sed "s/sha256sums=('SKIP')/sha256sums=('$(curl -s "https://registry.npmjs.org/solve3-cli/-/solve3-cli-'$(printf "$(git describe --abbrev=0 | sed 's/v//')")'.tgz" | sha256sum | head -c 64)')/"
+) | sed 's/pkgver=SCLI_PKGVER/pkgver='$(printf "$(git describe --abbrev=0 | sed 's/v//')")'/' | sed "s/sha256sums=('SKIP')/sha256sums=('$(curl -s "https://registry.npmjs.org/solve3-cli/-/solve3-cli-$(printf "$(git describe --abbrev=0 | sed 's/v//')").tgz" | sha256sum | head -c 64)')/"
