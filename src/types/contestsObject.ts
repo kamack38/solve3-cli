@@ -4,7 +4,7 @@ type contestsArray = {
     records: contest[]
 }
 
-type contest = {
+export type contest = {
     id: string
     short_name: string
     name: string

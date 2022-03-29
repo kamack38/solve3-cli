@@ -24,7 +24,7 @@ const config = new Configstore('solve3-cli', { username: '', password: '', authC
 
 const program = new Command()
 
-program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.7.2', '-v, --version').showSuggestionAfterError()
+program.name('solve3').description('Awesome Solve3 Cli built using custom API').version('1.7.3', '-v, --version').showSuggestionAfterError()
 
 program
     .command('login')
@@ -178,7 +178,7 @@ program
     .description('Show tasks')
     .argument('[query]', 'Query to search tasks. If not provided shows all tasks')
     .option('-p, --page <page>', 'Show tasks on the specified page')
-    .action((query: string = '', { page = '1' }: { page: string }) => {
+    .action((query = '', { page = '1' }: { page: string }) => {
         const SessionId = getSessionId()
         SessionId && selectTask(SessionId, toInt(page), query)
     })

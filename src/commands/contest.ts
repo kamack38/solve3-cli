@@ -30,14 +30,15 @@ import contestDataType from '../types/contestData.js'
 
 const config = new Configstore('solve3-cli')
 
-const selectContest = async (SessionId: string, contestId: string = '0', onlyAvailable: boolean = false, page: number = 1, live: boolean = false) => {
+const selectContest = async (SessionId: string, contestId = '0', onlyAvailable = false, page = 1, live = false) => {
     const res: contestsArray = await getSolveData(SessionId, contests, contestId, { page })
     if (!res) {
         printError('This is NOT available!')
         return
     }
 
-    let { records: contestsArr, total_pages } = res
+    let { records: contestsArr } = res
+    const { total_pages } = res
     if (!contestsArr.length) {
         showContestInfo(SessionId, contestId, onlyAvailable, live)
         return
@@ -47,13 +48,15 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
         contestsArr = contestsArr.filter(({ permission }) => permission === '<span class="badge badge-success">Tak</span>')
     }
 
+    const separator = new inquirer.Separator()
+
     const favourites = config.get('favourites')
-    const choices: any[] = contestsArr.map(({ name, id }) => {
+    const choices: ({ name: string; value: string } | string | typeof separator)[] = contestsArr.map(({ name, id }) => {
         return { name, value: id }
     })
 
     if (isNotEmpty(favourites)) {
-        choices.unshift(new inquirer.Separator())
+        choices.unshift(separator)
         for (const key in favourites) {
             choices.unshift({ name: `${chalk.yellow(figures.star)} ` + favourites[key].name, value: favourites[key].id })
         }
@@ -61,7 +64,7 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
 
     let defaultSelect = 0
     if (contestId !== '0' && contestId !== undefined) {
-        choices.unshift(backOption, new inquirer.Separator())
+        choices.unshift(backOption, separator)
         defaultSelect += 1
     }
     choices.push(...handlePagination(page, total_pages - 1))
@@ -86,10 +89,11 @@ const selectContest = async (SessionId: string, contestId: string = '0', onlyAva
                 case selectedContest === previousPageOption:
                     selectContest(SessionId, contestId, onlyAvailable, page - 1, live)
                     break
-                case selectedContest === backOption:
+                case selectedContest === backOption: {
                     const contestData: contestDataType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
                     selectContest(SessionId, contestData.contest.parent, onlyAvailable, 1, live)
                     break
+                }
                 case selectedContest === quitOption:
                     break
                 default:
@@ -159,6 +163,7 @@ const showContestInfo = async (SessionId: string, contestId: string, onlyAvailab
                     break
                 case askQuestionOption:
                     await askQuestion(SessionId, id)
+                    break
                 case favouriteOption:
                     if (favouriteOption === favouriteAddOption) {
                         favourites[contestId] = { name: name, id: contestId }

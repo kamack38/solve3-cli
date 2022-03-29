@@ -27,7 +27,7 @@ type contestInfo = {
     report_detail: string
     hide_ranking_problems: string
     all_submits: string
-    _permission: any
+    _permission: boolean | string
 }
 
 export default contestInfo

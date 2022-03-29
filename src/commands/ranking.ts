@@ -7,12 +7,12 @@ import rankingObject from '../types/rankingObject.js'
 import contestData from '../types/contestData.js'
 import { printError } from '../utils/messages.js'
 
-const setResultColor = (result: number, maxValue: number = 100) => {
+const setResultColor = (result: number, maxValue = 100) => {
     const f = chroma.scale(['red', 'yellow', 'orange', 'LimeGreen'])
     return chalk.hex(f(result / maxValue).toString())(result)
 }
 
-const showRanking = async (SessionId: string, id: string, afterTime: boolean = false) => {
+const showRanking = async (SessionId: string, id: string, afterTime = false) => {
     const res: contestData = await getSolveData(SessionId, pageData, id + '/' + 1 + '/', {
         want_after: afterTime,
     })

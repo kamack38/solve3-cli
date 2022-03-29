@@ -18,7 +18,7 @@ const login = async (username: string, password: string) => {
             if (!res.data.includes('Panel użytkownika')) {
                 throw new Error('You had given wrong username or password')
             }
-            const cookie = res.headers['set-cookie'][0].replace(/\;.*/, '').replace(/.*\=/, '')
+            const cookie = res.headers['set-cookie'][0].replace(/;.*/, '').replace(/.*=/, '')
             printSuccess('Successfully logged in')
             return cookie
         })

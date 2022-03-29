@@ -23,7 +23,7 @@ type response = {
     total_count: string
 }
 
-const showStatus = async (SessionId: string, query: string = '', page: number = 1, myOnly?: boolean) => {
+const showStatus = async (SessionId: string, query = '', page = 1, myOnly?: boolean) => {
     const { records, total_pages }: response = await getSolveData(SessionId, statuses, '', { page, query, param: myOnly ? true : false })
     const title = query.length ? `🔍 Search: ${query}` : 'Recent submissions'
     const descriptionColumns = ['ID', 'Author', 'Test', 'Task', 'Status', 'Time', 'Memory', 'Result', 'Date']
@@ -32,7 +32,7 @@ const showStatus = async (SessionId: string, query: string = '', page: number = 
     selectPage(SessionId, query, page, total_pages, myOnly)
 }
 
-const selectPage = (SessionId: string, query: string = '', page: number, totalPages: number, myOnly: boolean = false) => {
+const selectPage = (SessionId: string, query = '', page: number, totalPages: number, myOnly = false) => {
     const choices = [...handlePagination(page, totalPages)]
     inquirer
         .prompt([

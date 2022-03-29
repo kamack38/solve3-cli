@@ -10,7 +10,7 @@ import { nextPageOption, previousPageOption, quitOption, downloadCodeOption, sho
 import contestData from '../types/contestData.js'
 import testObject from '../types/testObject.js'
 
-const showSubmissions = async (SessionId: string, contestId?: string, page: number = 1) => {
+const showSubmissions = async (SessionId: string, contestId?: string, page = 1) => {
     const { submits, contest, submits_count }: contestData = await getSolveData(SessionId, pageData, contestId + '/' + page)
     const tableTitle = `Submits: ${chalk.cyanBright(contest.name)}`
     const submitsCount = Number(submits_count)

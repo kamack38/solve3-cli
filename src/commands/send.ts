@@ -12,8 +12,9 @@ import { handleSubmitStatus } from '../utils/printTable.js'
 import problemObjectType from '../types/problemObject.js'
 import contestData from '../types/contestData.js'
 import ArrayElement from '../types/ArrayElement.js'
+import type FormData from 'form-data'
 
-export const send = async (SessionId: string, route: string, sendData: any, resUrl: string) => {
+export const send = async (SessionId: string, route: string, sendData: FormData, resUrl: string) => {
     postSolveData(SessionId, route, sendData)
         .then((res) => {
             const responseUrl = res.request.res.responseUrl
@@ -97,12 +98,13 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
         ])
         .then(async ({ option }) => {
             switch (option) {
-                case sendSolutionOption:
+                case sendSolutionOption: {
                     const filePath = await selectFile()
                     if (filePath) {
                         await sendContestSolution(SessionId, problemShortName, contestId, filePath)
                     }
                     break
+                }
                 case descriptionOption:
                     await showProblemDescription(id)
                     break
@@ -120,7 +122,7 @@ const showProblemInfo = ({ name, id, contest_id, problem_id, short_name }: probl
     printInfo('Description link', `https://solve.edu.pl/contests/download_desc/${id}`)
 }
 
-const isCppFile = (value: string, ext: string = '.cpp') => {
+const isCppFile = (value: string, ext = '.cpp') => {
     if (extname(value) === ext || extname(value) === '') {
         return true
     }
@@ -144,7 +146,7 @@ export const selectFile = async (ext?: string) => {
             } else {
                 printError("You can't select a directory")
                 printTip('Press <tab> to expand the directory and select a valid file')
-                process.exit(1)
+                return null
             }
         })
 }

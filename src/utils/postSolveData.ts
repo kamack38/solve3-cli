@@ -29,7 +29,7 @@ const postSolveData = async (SessionId: string, route: string, data: FormData) =
         })
 }
 
-export const createTaskSubmitData = async (SessionId: string, id: string, filePath: string, lang: string = 'cpp') => {
+export const createTaskSubmitData = async (SessionId: string, id: string, filePath: string, lang = 'cpp') => {
     const formData = new FormData()
     const csrfAction = 'tasks_submit'
     const fileLabel = 'tasks_submit[solution_file]'

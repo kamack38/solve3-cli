@@ -13,7 +13,7 @@ import handlePagination from '../utils/handlePagination.js'
 
 const config = new Configstore('solve3-cli')
 
-const selectTask = async (SessionId: string, page: number = 1, query: string = '') => {
+const selectTask = async (SessionId: string, page = 1, query = '') => {
     const { records, total_pages } = await getSolveData(SessionId, tasks, '', { page, query })
     const choices = [...records]
     choices.push(...handlePagination(page, total_pages - 1))
@@ -38,9 +38,10 @@ const selectTask = async (SessionId: string, page: number = 1, query: string = '
                     break
                 case quitOption:
                     break
-                default:
+                default: {
                     const { id, name, short_name, level } = records.find(({ name }) => name === option)
                     showTaskInfo(SessionId, id, name, short_name, level)
+                }
             }
         })
 }
@@ -74,12 +75,13 @@ export const showTaskInfo = async (SessionId: string, taskId: string, taskName: 
                 case descriptionOption:
                     showProblemDescription(taskId, taskDescription)
                     break
-                case sendSolutionOption:
+                case sendSolutionOption: {
                     const filePath = await selectFile()
                     if (filePath) {
                         sendTaskSolution(SessionId, taskId, filePath)
                     }
                     break
+                }
                 case submissionsOption:
                     showStatus(SessionId, taskName, 1)
             }
