@@ -2,7 +2,21 @@ name: 🚀 Publish AUR package
 
 on:
   workflow_call:
+    inputs:
+      genFilename:
+        description: Name of generation script
+        default: gen-aur
+        required: false
+        type: string
   workflow_dispatch:
+    inputs:
+      genFilename:
+        description: Name of generation script
+        required: true
+        type: choice
+        options:
+          - gen-aur
+          - gen-aur-bin
 
 jobs:
   publish-aur:
@@ -13,11 +27,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: 🔃 Get latest tag
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        id: get-latest-tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
       - name: 🔧 Generate PKGBUILD
         run: |
           mkdir -p ./tmp
-          bash scripts/gen_pkgbuild.sh > ./tmp/PKGBUILD
+          bash scripts/${{ github.event.inputs.genFilename }}.sh > ./tmp/PKGBUILD
           cat ./tmp/PKGBUILD
       - name: 🚀 Publish AUR package
         uses: KSXGitHub/github-actions-deploy-aur@v2.2.5
@@ -27,4 +42,4 @@ jobs:
           commit_username: ${{ secrets.AUR_USERNAME }}
           commit_email: ${{ secrets.AUR_EMAIL }}
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: Update AUR package to ${{ env.RELEASE_VERSION }}
+          commit_message: Update AUR package to ${{ steps.get-latest-tag.outputs.tag }}
