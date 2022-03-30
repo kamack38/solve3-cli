@@ -11,8 +11,8 @@ const getSolveData = async (SessionId: string, route: string, suffix: string | n
             params,
         })
         .then((res) => res.data)
-        .catch((error) => {
-            printError(error)
+        .catch((error: Error) => {
+            printError(error.message)
         })
 }
 

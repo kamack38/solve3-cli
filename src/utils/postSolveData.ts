@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { createReadStream } from 'fs'
+import { createReadStream, PathLike } from 'fs'
 import FormData from 'form-data'
 import getCSRFToken from '../utils/getCSRFToken.js'
-import { printError } from '../utils/messages.js'
 import { taskSubmit, contestPage } from '../lib/routes.js'
 
 const postSolveData = async (SessionId: string, route: string, data: FormData) => {
@@ -23,17 +22,16 @@ const postSolveData = async (SessionId: string, route: string, data: FormData) =
                   },
         )
         .then((res) => res)
-        .catch((error) => {
-            printError(error)
-            return error
+        .catch((error: Error) => {
+            throw new Error('Error: ' + error.message)
         })
 }
 
-export const createTaskSubmitData = async (SessionId: string, id: string, filePath: string, lang = 'cpp') => {
+export const createTaskSubmitData = async (SessionId: string, id: string, filePath: PathLike, lang = 'cpp') => {
     const formData = new FormData()
     const csrfAction = 'tasks_submit'
     const fileLabel = 'tasks_submit[solution_file]'
-    const csrfToken = await getCSRFToken(taskSubmit + id, csrfAction, SessionId)
+    const csrfToken: string = await getCSRFToken(taskSubmit + id, csrfAction, SessionId)
     formData.append('csrf_action', csrfAction)
     formData.append('csrf_token', csrfToken)
     formData.append('tasks_submit[solution_lang]', lang)
@@ -42,10 +40,10 @@ export const createTaskSubmitData = async (SessionId: string, id: string, filePa
     return formData
 }
 
-export const createSubmitData = async (SessionId: string, id: string, problemShortName: string, filePath: string) => {
+export const createSubmitData = async (SessionId: string, id: string, problemShortName: string, filePath: PathLike) => {
     const formData = new FormData()
     const csrfAction = 'contest_submit'
-    const csrfToken = await getCSRFToken(contestPage + id, csrfAction, SessionId)
+    const csrfToken: string = await getCSRFToken(contestPage + id, csrfAction, SessionId)
     formData.append('csrf_action', csrfAction)
     formData.append('csrf_token', csrfToken)
     formData.append('contest_submit[problem]', problemShortName)

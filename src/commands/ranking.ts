@@ -4,7 +4,7 @@ import { table } from 'table'
 import getSolveData from '../utils/getSolveData.js'
 import { pageData } from '../lib/routes.js'
 import rankingObject from '../types/rankingObject.js'
-import contestData from '../types/contestData.js'
+import contestType from '../types/contestType.js'
 import { printError } from '../utils/messages.js'
 
 const setResultColor = (result: number, maxValue = 100) => {
@@ -13,7 +13,7 @@ const setResultColor = (result: number, maxValue = 100) => {
 }
 
 const showRanking = async (SessionId: string, id: string, afterTime = false) => {
-    const res: contestData = await getSolveData(SessionId, pageData, id + '/' + 1 + '/', {
+    const res: contestType = await getSolveData(SessionId, pageData, id + '/' + 1 + '/', {
         want_after: afterTime,
     })
 

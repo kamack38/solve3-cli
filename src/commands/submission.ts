@@ -7,11 +7,11 @@ import printTable, { handleSubmitStatus } from '../utils/printTable.js'
 import handlePagination from '../utils/handlePagination.js'
 import { pageData, submitDetails } from '../lib/routes.js'
 import { nextPageOption, previousPageOption, quitOption, downloadCodeOption, showSubmissionDetailsOption } from '../lib/options.js'
-import contestData from '../types/contestData.js'
+import contestType from '../types/contestType.js'
 import testObject from '../types/testObject.js'
 
 const showSubmissions = async (SessionId: string, contestId?: string, page = 1) => {
-    const { submits, contest, submits_count }: contestData = await getSolveData(SessionId, pageData, contestId + '/' + page)
+    const { submits, contest, submits_count }: contestType = await getSolveData(SessionId, pageData, contestId + '/' + page)
     const tableTitle = `Submits: ${chalk.cyanBright(contest.name)}`
     const submitsCount = Number(submits_count)
     const tableSuffix = `Page: ${page}/${Math.ceil(submitsCount / 15)}`
@@ -33,7 +33,7 @@ const showSubmissions = async (SessionId: string, contestId?: string, page = 1) 
                 choices: choices,
             },
         ])
-        .then(async ({ option }) => {
+        .then(async ({ option }: { option: string }) => {
             switch (option) {
                 case nextPageOption:
                     return await showSubmissions(SessionId, contestId, page + 1)
@@ -58,7 +58,7 @@ const showSubmissionOptions = async (SessionId: string, submitId: string) => {
                 choices: choices,
             },
         ])
-        .then(async ({ option }) => {
+        .then(async ({ option }: { option: string }) => {
             switch (option) {
                 case downloadCodeOption:
                     return await downloadSubmitCode(SessionId, submitId)
@@ -79,7 +79,7 @@ const showSubmissionDetails = async (SessionId: string, submitId: string) => {
 }
 
 export const showLatestSubmission = async (SessionId: string, contestId: string) => {
-    const { submits } = await getSolveData(SessionId, pageData, contestId + '/' + 1)
+    const { submits }: contestType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
     submits?.length ? showSubmissionDetails(SessionId, submits[0].id) : printError('No contest was found with ID:' + contestId)
 }
 

@@ -1,12 +1,12 @@
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { pageData, questionSubmit, questionToken } from '../lib/routes.js'
-import contestData from '../types/contestData.js'
+import contestType from '../types/contestType.js'
 import getSolveData from '../utils/getSolveData.js'
 import { printValue, printTip, printError, printSuccess } from '../utils/messages.js'
 
 const showQuestions = async (SessionId: string, contestId: string) => {
-    const { questions }: contestData = await getSolveData(SessionId, pageData, contestId + '/' + 1)
+    const { questions }: contestType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
     if (questions.length) {
         questions.forEach(({ title, id, first_name, last_name, content, display_time }) => {
             printValue('Title', title)

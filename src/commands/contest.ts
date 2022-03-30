@@ -26,7 +26,9 @@ import {
 } from '../lib/options.js'
 import showQuestions, { askQuestion } from './question.js'
 import contestsArray from '../types/contestsObject.js'
-import contestDataType from '../types/contestData.js'
+import contestType from '../types/contestType.js'
+import contestDataType from '../types/contestDataType.js'
+import configType from '../types/configType.js'
 
 const config = new Configstore('solve3-cli')
 
@@ -50,7 +52,7 @@ const selectContest = async (SessionId: string, contestId = '0', onlyAvailable =
 
     const separator = new inquirer.Separator()
 
-    const favourites = config.get('favourites')
+    const favourites: configType['favourites'] = config.get('favourites')
     const choices: ({ name: string; value: string } | string | typeof separator)[] = contestsArr.map(({ name, id }) => {
         return { name, value: id }
     })
@@ -90,7 +92,7 @@ const selectContest = async (SessionId: string, contestId = '0', onlyAvailable =
                     selectContest(SessionId, contestId, onlyAvailable, page - 1, live)
                     break
                 case selectedContest === backOption: {
-                    const contestData: contestDataType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
+                    const contestData: contestType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
                     selectContest(SessionId, contestData.contest.parent, onlyAvailable, 1, live)
                     break
                 }
@@ -116,7 +118,7 @@ const printTime = (endTime: string) => {
 }
 
 const showContestInfo = async (SessionId: string, contestId: string, onlyAvailable: boolean, live: boolean) => {
-    const { name, id, parent, short_name, end_time } = await getSolveData(SessionId, contestDataRoute, contestId)
+    const { name, id, parent, short_name, end_time }: contestDataType = await getSolveData(SessionId, contestDataRoute, contestId)
     printTip('Contest Info')
     printInfo('Name', name)
     printInfo('ID', id)
@@ -124,7 +126,7 @@ const showContestInfo = async (SessionId: string, contestId: string, onlyAvailab
     printInfo('Short name', short_name)
     printInfo('Time left', printTime(end_time))
 
-    const favourites = config.get('favourites')
+    const favourites: configType['favourites'] = config.get('favourites')
     const favouriteOption = favourites[contestId] ? favouriteRemoveOption : favouriteAddOption
     const choices = [backOption, problemsOption, rankingOption, afterTimeRankingOption, submissionsOption, showQuestionsOption, askQuestionOption, favouriteOption, quitOption]
     inquirer
@@ -139,7 +141,7 @@ const showContestInfo = async (SessionId: string, contestId: string, onlyAvailab
                 default: 1,
             },
         ])
-        .then(async ({ option }) => {
+        .then(async ({ option }: { option: string }) => {
             switch (option) {
                 case quitOption:
                     return

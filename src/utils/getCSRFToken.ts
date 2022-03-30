@@ -17,7 +17,7 @@ const getCSRFToken = async (route: string, csrf_action: string, SessionId?: stri
                       baseURL: 'https://solve.edu.pl/',
                   },
         )
-        .then((res) => {
+        .then((res: { data: string }) => {
             const dom = new JSDOM(res.data)
             const token = dom.window.document.querySelector(`input[name='csrf_action'][value='${csrf_action}']+input[name='csrf_token']`)?.getAttribute('value')
             if (!token) {
@@ -26,8 +26,8 @@ const getCSRFToken = async (route: string, csrf_action: string, SessionId?: stri
             }
             return token
         })
-        .catch((error) => {
-            printError(error)
+        .catch((error: Error) => {
+            printError(error.message)
             return null
         })
 }

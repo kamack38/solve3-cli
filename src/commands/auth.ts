@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import inquirer from 'inquirer'
 import FormData from 'form-data'
 import getCSRFToken from '../utils/getCSRFToken.js'
@@ -14,7 +14,7 @@ const login = async (username: string, password: string) => {
     formData.append('submit_user_login', 'Zaloguj')
     return axios
         .post('https://solve.edu.pl/users/login', formData, { headers: formData.getHeaders() })
-        .then((res) => {
+        .then((res: { data: string; headers: AxiosResponse['headers'] }) => {
             if (!res.data.includes('Panel użytkownika')) {
                 throw new Error('You had given wrong username or password')
             }
@@ -22,8 +22,8 @@ const login = async (username: string, password: string) => {
             printSuccess('Successfully logged in')
             return cookie
         })
-        .catch((error) => {
-            printError(error)
+        .catch((e: Error) => {
+            printError(e.message)
         })
 }
 
@@ -53,7 +53,7 @@ const authenticate = async (username?: string, password?: string) => {
                     validate: requireLetterOrNumber,
                 },
             ])
-            .then(async ({ selectedUsername, selectedPassword }) => await login(selectedUsername, selectedPassword))
+            .then(async ({ selectedUsername, selectedPassword }: { [k: string]: string }) => await login(selectedUsername, selectedPassword))
     }
 }
 

@@ -5,7 +5,7 @@ import ownResults from './ownResults.js'
 import problemObject from './problemObject.js'
 import questionObject from './questionObject.js'
 
-type contestData = {
+type contestType = {
     contest: contestInfo
     questions: questionObject[]
     problems: problemObject[]
@@ -15,4 +15,4 @@ type contestData = {
     ranking: rankingObject[]
 }
 
-export default contestData
+export default contestType

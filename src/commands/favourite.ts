@@ -4,11 +4,13 @@ import figures from 'figures'
 import getSolveData from '../utils/getSolveData.js'
 import isNotEmpty from '../utils/isNotEmpty.js'
 import { contestData } from '../lib/routes.js'
+import configType from '../types/configType.js'
+import contestDataType from '../types/contestDataType.js'
 
 const config = new Configstore('solve3-cli')
 
 export const showFavouriteContests = () => {
-    const favourites = config.get('favourites')
+    const favourites: configType['favourites'] = config.get('favourites')
     if (isNotEmpty(favourites)) {
         console.log(chalk.yellow(figures.star), chalk.cyan('Favourite contests'))
         for (const key in favourites) {
@@ -20,8 +22,8 @@ export const showFavouriteContests = () => {
 }
 
 export const addFavouriteContest = async (SessionId: string, contestId: string) => {
-    const favourites = config.get('favourites')
-    const { id, name } = await getSolveData(SessionId, contestData, contestId)
+    const favourites: configType['favourites'] = config.get('favourites')
+    const { id, name }: contestDataType = await getSolveData(SessionId, contestData, contestId)
     if (id) {
         favourites[contestId] = { id, name }
         config.set('favourites', favourites)
@@ -32,7 +34,7 @@ export const addFavouriteContest = async (SessionId: string, contestId: string) 
 }
 
 export const deleteFavouriteContest = (contestId: string) => {
-    const favourites = config.get('favourites')
+    const favourites: configType['favourites'] = config.get('favourites')
     if (favourites[contestId]) {
         const contestName = favourites[contestId].name
         delete favourites[contestId]

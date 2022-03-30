@@ -1,6 +1,6 @@
 import inquirer from 'inquirer'
 import inquirerFileTreeSelection from 'inquirer-file-tree-selection-prompt'
-import { lstatSync } from 'node:fs'
+import { lstatSync, PathLike } from 'node:fs'
 import { extname } from 'node:path'
 import showProblemDescription from './description.js'
 import getSolveData from '../utils/getSolveData.js'
@@ -10,33 +10,33 @@ import { contestSubmit, pageData } from '../lib/routes.js'
 import { sendSolutionOption, descriptionOption, quitOption } from '../lib/options.js'
 import { handleSubmitStatus } from '../utils/printTable.js'
 import problemObjectType from '../types/problemObject.js'
-import contestData from '../types/contestData.js'
+import contestType from '../types/contestType.js'
 import ArrayElement from '../types/ArrayElement.js'
 import type FormData from 'form-data'
 
 export const send = async (SessionId: string, route: string, sendData: FormData, resUrl: string) => {
     postSolveData(SessionId, route, sendData)
         .then((res) => {
-            const responseUrl = res.request.res.responseUrl
+            const responseUrl: string = res.request.res.responseUrl
             if (responseUrl === resUrl) {
                 printSuccess('File has been successfully sent!')
             } else {
                 printError('Error while sending the file')
             }
         })
-        .catch((error) => {
-            printError(error)
+        .catch((error: Error) => {
+            printError(error.message)
         })
 }
 
-const sendContestSolution = async (SessionId: string, problemShortName: string, id: string, filePath: string) => {
+const sendContestSolution = async (SessionId: string, problemShortName: string, id: string, filePath: PathLike) => {
     const contestSendData = await createSubmitData(SessionId, id, problemShortName, filePath)
     const resUrl = `https://solve.edu.pl/contests/view/${id}`
     send(SessionId, contestSubmit + id, contestSendData, resUrl)
 }
 
-const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: string) => {
-    const { problems, own_results }: contestData = await getSolveData(SessionId, pageData, contestId)
+const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: PathLike) => {
+    const { problems, own_results }: contestType = await getSolveData(SessionId, pageData, contestId)
     if (problemId) {
         let problemShortName = ''
         let problemName = ''
@@ -96,7 +96,7 @@ const showProblemOptions = async (SessionId: string, contestId: string, problemS
                 choices: choices,
             },
         ])
-        .then(async ({ option }) => {
+        .then(async ({ option }: { option: string }) => {
             switch (option) {
                 case sendSolutionOption: {
                     const filePath = await selectFile()
@@ -140,7 +140,7 @@ export const selectFile = async (ext?: string) => {
                 validate: (val: string) => isCppFile(val, ext),
             },
         ])
-        .then(async ({ filePath }) => {
+        .then(async ({ filePath }: { filePath: PathLike }) => {
             if (!lstatSync(filePath).isDirectory()) {
                 return filePath
             } else {
