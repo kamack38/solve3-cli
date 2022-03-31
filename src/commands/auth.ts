@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosResponseHeaders } from 'axios'
 import inquirer from 'inquirer'
 import FormData from 'form-data'
 import getCSRFToken from '../utils/getCSRFToken.js'
@@ -14,11 +14,14 @@ const login = async (username: string, password: string) => {
     formData.append('submit_user_login', 'Zaloguj')
     return axios
         .post('https://solve.edu.pl/users/login', formData, { headers: formData.getHeaders() })
-        .then((res: { data: string; headers: AxiosResponse['headers'] }) => {
-            if (!res.data.includes('Panel użytkownika')) {
+        .then(({ data, headers }: { data: string; headers: AxiosResponseHeaders }) => {
+            if (!data.includes('Panel użytkownika') || headers['set-cookie'] == null) {
                 throw new Error('You had given wrong username or password')
             }
-            const cookie = res.headers['set-cookie'][0].replace(/;.*/, '').replace(/.*=/, '')
+            if (headers['set-cookie'] == null) {
+                throw new Error('Could not retrieve authentication cookie!')
+            }
+            const cookie = headers['set-cookie'][0].replace(/;.*/, '').replace(/.*=/, '')
             printSuccess('Successfully logged in')
             return cookie
         })

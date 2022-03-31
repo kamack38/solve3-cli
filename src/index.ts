@@ -19,6 +19,7 @@ import { showFavouriteContests, addFavouriteContest, deleteFavouriteContest } fr
 import showProblemDescription from './commands/description.js'
 import showStatus from './commands/status.js'
 import logout from './commands/logout.js'
+import { printError } from './utils/messages.js'
 
 const config = new Configstore('solve3-cli', { username: '', password: '', authCookie: '', lastContest: '0', lastTask: '', favourites: {} })
 
@@ -112,7 +113,7 @@ program
     .action((id: string) => {
         const SessionId = getSessionId()
         !id && (id = getLastContest())
-        showQuestions(SessionId, id)
+        SessionId && showQuestions(SessionId, id)
     })
 
 program
@@ -135,7 +136,9 @@ program
     .option('-d, --delete <contestId>', 'Delete contest from favourite contests')
     .action((options: { add: string; delete: string }) => {
         const SessionId = getSessionId()
-        if (options.add) {
+        if (!SessionId) {
+            printError('SessionId could not be found!')
+        } else if (options.add) {
             addFavouriteContest(SessionId, options.add)
         } else if (options.delete) {
             deleteFavouriteContest(options.delete)

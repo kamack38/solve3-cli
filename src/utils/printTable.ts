@@ -27,36 +27,40 @@ export const handleSubmitStatus = (status: string) => {
             return ''
     }
     printError('Error no contest badge found with status: ' + status)
+    return ''
 }
 
-const printTable = (title: string, descriptionColumns: string[], data: object[], dataTemplate: string[], titleSuffix?: string) => {
+const printTable = (title: string, descriptionColumns: string[], data: { [key: string]: string | number | Date }[], dataTemplate: string[], titleSuffix?: string) => {
     if (descriptionColumns.length != dataTemplate.length) {
         printError('Length of description columns and data template must match!')
         return null
     }
+
     const size = titleSuffix ? descriptionColumns.length - 2 : descriptionColumns.length - 1
     const tableTitle = [title]
     tableTitle.push(...new Array(size).fill(''))
     titleSuffix ? tableTitle.push(titleSuffix) : null
 
-    const tableData = data.map((data) => {
-        const row = []
+    const tableData = data.map((values) => {
+        const row: string[] = []
         dataTemplate.forEach((el) => {
+            el = String(el)
+            const val = String(values[el])
             switch (el) {
                 case 'status':
-                    row.push(handleSubmitStatus(data[el]))
+                    row.push(handleSubmitStatus(val))
                     break
                 case 'time':
-                    row.push(data[el].replace(/<.*?>/g, '').trim())
+                    row.push(val.replace(/<.*?>/g, '').trim())
                     break
                 case 'mem':
-                    row.push(data['mem'] ? `${data['mem'].replace(/\s/g, '')}/${data['mem_limit']}MB` : '')
+                    row.push(val ? `${val.replace(/\s/g, '')}/${values['mem_limit']}MB` : '')
                     break
                 case 'comment':
-                    row.push(data['comment'].replace(/ +/g, ' ').replace('Å‚', 'ł').trim())
+                    row.push(val.replace(/ +/g, ' ').replace('Å‚', 'ł').trim())
                     break
                 default:
-                    row.push(data[el])
+                    row.push(val)
             }
         })
         return row

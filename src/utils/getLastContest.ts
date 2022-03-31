@@ -7,7 +7,7 @@ const getLastContest = () => {
     const lastContest: string = config.get('lastContest')
     if (!lastContest) {
         printError('Last contest was not found!')
-        return undefined
+        return ''
     } else {
         return lastContest
     }

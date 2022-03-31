@@ -44,7 +44,7 @@ const selectPage = (SessionId: string, query = '', page: number, totalPages: num
                 loop: true,
             },
         ])
-        .then(({ option }) => {
+        .then(({ option }: { option: string }) => {
             switch (option) {
                 case nextPageOption:
                     showStatus(SessionId, query, page + 1, myOnly)

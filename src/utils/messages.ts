@@ -13,7 +13,7 @@ export const printTip = (message: string) => {
     console.log(chalk.blue(figures.info), chalk.cyan(message))
 }
 
-export const printError = (error: string) => {
+export const printError = (error: unknown) => {
     console.log(chalk.red(figures.cross), chalk.redBright(error))
 }
 

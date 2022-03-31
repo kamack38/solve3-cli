@@ -41,9 +41,17 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
         let problemShortName = ''
         let problemName = ''
         if (isNaN(Number(problemId))) {
-            ;({ short_name: problemShortName, name: problemName } = problems.find(({ short_name }) => short_name.toLowerCase() === problemId.toLowerCase()))
+            const problem = problems.find(({ short_name }) => short_name.toLowerCase() === problemId.toLowerCase())
+            if (typeof problem === 'object') {
+                problemShortName = problem.short_name
+                problemName = problem.name
+            }
         } else {
-            ;({ short_name: problemShortName, name: problemName } = problems.find(({ id }) => id === problemId))
+            const problem = problems.find(({ id }) => id === problemId)
+            if (typeof problem === 'object') {
+                problemShortName = problem.short_name
+                problemName = problem.name
+            }
         }
         if (!problemShortName) {
             printError('No problems found')
@@ -52,13 +60,19 @@ const showProblems = async (SessionId: string, contestId: string, problemId?: st
         printValue('Name', problemName)
         printValue('Short name', problemShortName)
         if (!filePath) {
-            filePath = await selectFile()
+            const selectedFile = await selectFile()
+            if (selectedFile) {
+                filePath = selectedFile
+            } else {
+                printError('File path was not selected!')
+                return
+            }
         }
         sendContestSolution(SessionId, problemShortName, contestId, filePath)
     } else {
         const choices = problems.map(({ short_name, name, id, contest_id, problem_id, multiplier }) => {
             return {
-                name: `${short_name} - ${handleSubmitStatus(own_results[id].solution_status)} - ${name}`,
+                name: `${short_name} - ${handleSubmitStatus(own_results[Number(id)].solution_status)} - ${name}`,
                 value: {
                     name,
                     id,

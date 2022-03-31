@@ -17,7 +17,18 @@ const config = new Configstore('solve3-cli')
 
 const selectTask = async (SessionId: string, page = 1, query = '') => {
     const { records, total_pages }: tasksType = await getSolveData(SessionId, tasks, '', { page, query })
-    const choices = records.map(({ id, name, short_name, level }) => {
+
+    const separator = new inquirer.Separator()
+
+    type choicesType =
+        | {
+              name: string
+              value: { name: string; id: string; short_name: string; level: string }
+          }
+        | string
+        | typeof separator
+
+    const choices: choicesType[] = records.map(({ id, name, short_name, level }) => {
         return { name, value: { name, id, short_name, level } }
     })
     choices.push(...handlePagination(page, total_pages - 1))

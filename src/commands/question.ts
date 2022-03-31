@@ -28,7 +28,7 @@ const showQuestions = async (SessionId: string, contestId: string) => {
 }
 
 export const askQuestion = async (SessionId: string, contestId: string, title?: string, content?: string) => {
-    const { token } = await getSolveData(SessionId, questionToken)
+    const { token }: { token: string } = await getSolveData(SessionId, questionToken)
     if (!title) {
         await inquirer
             .prompt([
@@ -38,7 +38,7 @@ export const askQuestion = async (SessionId: string, contestId: string, title?: 
                     name: 'header',
                 },
             ])
-            .then(({ header }) => (title = header))
+            .then(({ header }: { header: string }) => (title = header))
     }
     if (!content) {
         await inquirer
@@ -49,7 +49,7 @@ export const askQuestion = async (SessionId: string, contestId: string, title?: 
                     name: 'question',
                 },
             ])
-            .then(({ question }) => (content = question))
+            .then(({ question }: { question: string }) => (content = question))
     }
     if (title && content) {
         try {

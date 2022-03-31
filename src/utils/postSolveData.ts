@@ -31,7 +31,7 @@ export const createTaskSubmitData = async (SessionId: string, id: string, filePa
     const formData = new FormData()
     const csrfAction = 'tasks_submit'
     const fileLabel = 'tasks_submit[solution_file]'
-    const csrfToken: string = await getCSRFToken(taskSubmit + id, csrfAction, SessionId)
+    const csrfToken = await getCSRFToken(taskSubmit + id, csrfAction, SessionId)
     formData.append('csrf_action', csrfAction)
     formData.append('csrf_token', csrfToken)
     formData.append('tasks_submit[solution_lang]', lang)
@@ -43,7 +43,7 @@ export const createTaskSubmitData = async (SessionId: string, id: string, filePa
 export const createSubmitData = async (SessionId: string, id: string, problemShortName: string, filePath: PathLike) => {
     const formData = new FormData()
     const csrfAction = 'contest_submit'
-    const csrfToken: string = await getCSRFToken(contestPage + id, csrfAction, SessionId)
+    const csrfToken = await getCSRFToken(contestPage + id, csrfAction, SessionId)
     formData.append('csrf_action', csrfAction)
     formData.append('csrf_token', csrfToken)
     formData.append('contest_submit[problem]', problemShortName)
