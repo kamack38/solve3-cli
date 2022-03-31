@@ -29,6 +29,9 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  publish-bin:
+    needs: publish-npm
+    uses: kamack38/solve3-cli/.github/workflows/_CD-BIN.yml@main
   publish-aur:
     needs: publish-npm
     uses: kamack38/solve3-cli/.github/workflows/_CD-AUR.yml@main

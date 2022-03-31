@@ -1,0 +1,62 @@
+name: 📦 Build executables & publish to github release
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows, macos, ubuntu]
+        include:
+          - os: windows
+            build: npx caxa --input . --output "solve3-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
+            artifact: solve3-windows-${{ github.sha }}.exe
+          - os: macos
+            build: |
+              npx caxa --input . --output "solve3" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
+              tar czf "solve3-macos-${{ github.sha }}.tgz" "solve3"
+            artifact: solve3-macos-${{ github.sha }}.tgz
+          - os: ubuntu
+            build: |
+              npx caxa --input . --output "solve3" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
+              tar czf "solve3-linux-${{ github.sha }}.tgz" "solve3"
+            artifact: solve3-linux-${{ github.sha }}.tgz
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - run: |
+          npm ci
+          npm run build
+          ${{ matrix.build }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+  publish-release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: solve3-windows-${{ github.sha }}.exe
+      - run: mv solve3-windows-${{ github.sha }}.exe solve3.exe
+      - uses: actions/download-artifact@v2
+        with:
+          name: solve3-macos-${{ github.sha }}.tgz
+      - run: mv solve3-macos-${{ github.sha }}.tgz solve3-macos.tgz
+      - uses: actions/download-artifact@v2
+        with:
+          name: solve3-linux-${{ github.sha }}.tgz
+      - run: mv solve3-linux-${{ github.sha }}.tgz solve3-linux.tgz
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            solve3.exe
+            solve3-macos.tgz
+            solve3-linux.tgz
