@@ -12,7 +12,7 @@
         "dev": "npm run build && node ./dist/index.js",
         "build": "tsc",
         "lint": "eslint ./src",
-        "ts-coverage": "typescript-coverage-report --threshold=98"
+        "ts-coverage": "typescript-coverage-report --threshold=99"
     },
     "keywords": [
         "cli",
