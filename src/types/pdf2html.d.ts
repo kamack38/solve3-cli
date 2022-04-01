@@ -6,7 +6,7 @@ declare module 'pdf2html' {
     export const meta: (filePath: PathLike, callback: (err: Error, res: string) => void) => void
     export const thumbnail: (
         filePath: PathLike,
-        options?: { page: number; imageType: 'png' | 'jpg'; width: number; height: number },
+        options: { page: number; imageType: 'png' | 'jpg'; width: number; height: number } | ((err: Error, res: string) => void),
         callback?: (err: Error, res: string) => void,
     ) => void
 }

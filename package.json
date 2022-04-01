@@ -12,6 +12,7 @@
         "dev": "npm run build && node ./dist/index.js",
         "build": "tsc",
         "lint": "eslint ./src",
+        "fix": "eslint ./src --fix",
         "ts-coverage": "typescript-coverage-report --threshold=99"
     },
     "keywords": [
