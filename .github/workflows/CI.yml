@@ -27,7 +27,7 @@ jobs:
         run: npm run build
       - name: 💄 Run lint
         run: npm run lint
-      - name: 📊 Show typescript code coverage
+      - name: 📊 Check typescript code coverage
         run: npm run ts-coverage
   analyze:
     name: '📊 CodeQL: Code analysis'
