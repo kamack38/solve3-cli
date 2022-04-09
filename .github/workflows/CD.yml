@@ -34,7 +34,19 @@ jobs:
     uses: kamack38/solve3-cli/.github/workflows/_CD-BIN.yml@main
   publish-aur:
     needs: publish-npm
-    uses: kamack38/solve3-cli/.github/workflows/_CD-AUR.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Packages Repo 🙋🏾‍♀️
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.HOMEBREW_PAT }}
+          script: |
+            await github.request('POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches', {
+              owner: 'kamack38',
+              repo: 'packages',
+              workflow_id: 'update-packages.yml',
+              ref: 'main'
+            })
   publish-homebrew:
     needs: publish-npm
     runs-on: ubuntu-latest
