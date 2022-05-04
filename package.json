@@ -58,7 +58,7 @@
         "inquirer": "^8.2.4",
         "inquirer-file-tree-selection-prompt": "^1.0.19",
         "jsdom": "^19.0.0",
-        "pdf2html": "^2.6.6",
+        "pdf2html": "^2.6.7",
         "table": "^6.8.0"
     },
     "engines": {
