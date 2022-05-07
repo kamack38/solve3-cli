@@ -37,36 +37,23 @@ const sendContestSolution = async (SessionId: string, problemShortName: string, 
 
 const showProblems = async (SessionId: string, contestId: string, problemId?: string, filePath?: PathLike) => {
     const { problems, own_results }: contestType = await getSolveData(SessionId, pageData, contestId)
+
     if (problemId) {
-        let problemShortName = ''
-        let problemName = ''
-        if (isNaN(Number(problemId))) {
-            const problem = problems.find(({ short_name }) => short_name.toLowerCase() === problemId.toLowerCase())
-            if (typeof problem === 'object') {
-                problemShortName = problem.short_name
-                problemName = problem.name
-            }
-        } else {
-            const problem = problems.find(({ id }) => id === problemId)
-            if (typeof problem === 'object') {
-                problemShortName = problem.short_name
-                problemName = problem.name
-            }
-        }
-        if (!problemShortName) {
+        const problem = problems.find(({ short_name, id }) => id === problemId || short_name.toLowerCase() === problemId.toLowerCase())
+        if (problem === undefined) {
             printError('No problems found')
-            return null
+            return
         }
+        const { short_name: problemShortName, name: problemName } = problem
         printValue('Name', problemName)
         printValue('Short name', problemShortName)
+
         if (!filePath) {
-            const selectedFile = await selectFile()
-            if (selectedFile) {
-                filePath = selectedFile
-            } else {
-                printError('File path was not selected!')
-                return
-            }
+            filePath = await selectFile()
+        }
+        if (!filePath) {
+            printError('File path was not selected!')
+            return
         }
         sendContestSolution(SessionId, problemShortName, contestId, filePath)
     } else {
@@ -160,7 +147,7 @@ export const selectFile = async (ext?: string) => {
             } else {
                 printError("You can't select a directory")
                 printTip('Press <tab> to expand the directory and select a valid file')
-                return null
+                return
             }
         })
 }

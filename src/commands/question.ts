@@ -7,24 +7,24 @@ import { printValue, printTip, printError, printSuccess } from '../utils/message
 
 const showQuestions = async (SessionId: string, contestId: string) => {
     const { questions }: contestType = await getSolveData(SessionId, pageData, contestId + '/' + 1)
-    if (questions.length) {
-        questions.forEach(({ title, id, first_name, last_name, content, display_time }) => {
-            printValue('Title', title)
-            printValue('ID', id)
-            printValue('Author', `${first_name} ${last_name}`)
-            printTip(display_time)
-            content = content.replace(/<br \/>/g, '')
-            const matches = content.match(/&quot;.*&quot;/g)
-            if (matches) {
-                matches.forEach((el) => {
-                    content = content.replace(el, chalk.italic(el.replace(/&quot;/g, "'")))
-                })
-            }
-            console.log(content)
-        })
-    } else {
+    if (!questions.length) {
         printError('No questions have been found!')
+        return
     }
+    questions.forEach(({ title, id, first_name, last_name, content, display_time }) => {
+        printValue('Title', title)
+        printValue('ID', id)
+        printValue('Author', `${first_name} ${last_name}`)
+        printTip(display_time)
+        content = content.replace(/<br \/>/g, '')
+        const matches = content.match(/&quot;.*&quot;/g)
+        if (matches) {
+            matches.forEach((el) => {
+                content = content.replace(el, chalk.italic(el.replace(/&quot;/g, "'")))
+            })
+        }
+        console.log(content)
+    })
 }
 
 export const askQuestion = async (SessionId: string, contestId: string, title?: string, content?: string) => {
