@@ -11,16 +11,17 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            build: npx caxa --input . --output "solve3-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
+            build: |
+              npx caxa --input . -d --output "solve3-windows-${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
             artifact: solve3-windows-${{ github.sha }}.exe
           - os: macos
             build: |
-              npx caxa --input . --output "solve3" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
+              npx caxa --input . -d --output "solve3" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
               tar czf "solve3-macos-${{ github.sha }}.tgz" "solve3"
             artifact: solve3-macos-${{ github.sha }}.tgz
           - os: ubuntu
             build: |
-              npx caxa --input . --output "solve3" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
+              npx caxa --input . -d --output "solve3" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/dist/index.js"
               tar czf "solve3-linux-${{ github.sha }}.tgz" "solve3"
             artifact: solve3-linux-${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}-latest
