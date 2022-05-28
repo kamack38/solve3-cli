@@ -22,13 +22,12 @@ const getCSRFToken = async (route: string, csrf_action: string, SessionId?: stri
             const token = dom.window.document.querySelector(`input[name='csrf_action'][value='${csrf_action}']+input[name='csrf_token']`)?.getAttribute('value')
             if (!token) {
                 printError('CSRF token could not be retrieved!')
-                return ''
+                return
             }
             return token
         })
         .catch((error: Error) => {
             printError(error.message)
-            return null
         })
 }
 export default getCSRFToken
