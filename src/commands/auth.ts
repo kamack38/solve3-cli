@@ -15,8 +15,11 @@ const login = async (username: string, password: string) => {
     return axios
         .post('https://solve.edu.pl/users/login', formData, { headers: formData.getHeaders() })
         .then(({ data, headers }: { data: string; headers: AxiosResponseHeaders }) => {
-            if (!data.includes('Panel użytkownika') || headers['set-cookie'] == null) {
-                throw new Error('You had given wrong username or password')
+            if (data.includes('Użytkownik o takim loginie nie istnieje')) {
+                throw new Error('User with such a username does not exist!')
+            }
+            if (data.includes('Podane hasło jest nieprawidłowe')) {
+                throw new Error('Wrong password!')
             }
             if (headers['set-cookie'] == null) {
                 throw new Error('Could not retrieve authentication cookie!')
