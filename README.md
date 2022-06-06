@@ -33,8 +33,7 @@ yay -S solve3-cli
 You can install `solve3-cli` using [Homebrew](https://brew.sh)
 
 ```shell
-brew tap kamack38/solve3-cli
-brew install solve3-cli
+brew install kamack38/solve3-cli/solve3-cli
 ```
 
 ## Installation without node
