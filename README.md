@@ -1,3 +1,7 @@
+# DEPRECATION NOTICE
+
+This repository has been archived since the solve3 system has been upgraded to a newer version. This means the solve3-cli will no longer work. The old site is now archived and READ-ONLY. You can find it at [https://old.solve.edu.pl/](https://old.solve.edu.pl/). The new site sits now at the old site's address ([https://solve.edu.pl/](https://solve.edu.pl/)).
+
 # Solve3-Cli
 
 Command-line tool for interacting with [Solve3](https://solve.edu.pl/)
